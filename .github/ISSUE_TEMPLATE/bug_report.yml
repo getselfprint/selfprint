@@ -1,0 +1,53 @@
+name: Bug report
+description: Something isn't working as expected
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. For anything security- or privacy-sensitive,
+        please follow SECURITY.md instead of filing a public issue.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to...
+        2. Click...
+        3. See...
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Interview mode
+      options:
+        - Guided (no AI)
+        - Copy-paste
+        - Anthropic key
+        - Local / OpenAI-compatible
+        - In-browser (WebGPU)
+        - Not relevant
+    validations:
+      required: false
+  - type: input
+    id: env
+    attributes:
+      label: Browser and OS
+      placeholder: e.g. Chrome 141 on Windows 11
+    validations:
+      required: false
+  - type: textarea
+    id: console
+    attributes:
+      label: Console / network errors
+      description: Any errors from the browser console. Please redact anything personal.
+    validations:
+      required: false

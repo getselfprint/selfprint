@@ -1,0 +1,68 @@
+{
+  "name": "selfprint",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Selfprint - a local-first app that interviews you, turns your answers into an editable personality model, and exports a persona file any AI can use.",
+  "license": "MIT",
+  "homepage": "https://selfprint.org",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/getselfprint/selfprint.git"
+  },
+  "bugs": {
+    "url": "https://github.com/getselfprint/selfprint/issues"
+  },
+  "author": "Selfprint contributors",
+  "keywords": [
+    "persona",
+    "personality-model",
+    "local-first",
+    "privacy",
+    "llm",
+    "ai",
+    "pwa",
+    "self-reflection"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "vite",
+    "prebuild": "node scripts/clean.mjs",
+    "build": "tsc -b && vite build && node scripts/build-site.mjs",
+    "preview": "vite preview",
+    "serve": "node scripts/serve.mjs",
+    "typecheck": "tsc -b --noEmit",
+    "deploy": "bash .infra/deploy.sh"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.1.0",
+    "@fontsource/inter": "^5.1.0",
+    "@fontsource/space-grotesk": "^5.1.0",
+    "@mlc-ai/web-llm": "^0.2.89",
+    "jszip": "^3.10.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.6.2",
+    "playwright": "^1.65.1",
+    "postcss": "^8.5.33",
+    "tailwindcss": "^3.4.19",
+    "typescript": "^5.6.3",
+    "vite": "^6.0.3",
+    "vite-plugin-pwa": "^0.21.1"
+  },
+  "comments": {
+    "overrides": "This machine's Application Control (WDAC) policy blocks Rollup's native .node binary from loading. @rollup/wasm-node is Rollup's pure-WASM build (same API, no native addon) and is the supported fallback for such environments. Remove this override on machines without the restriction."
+  },
+  "overrides": {
+    "rollup": "npm:@rollup/wasm-node@^4"
+  }
+}

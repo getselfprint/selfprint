@@ -1,0 +1,51 @@
+/*
+  Design tokens - spec §11.
+  Values transcribed from the 01_Map design reference (Main.dc.html).
+  Components reference these variables; do not hardcode hex values elsewhere.
+*/
+:root {
+  /* Surfaces */
+  --ground: #ffffff;
+  --sand-50: #faf7f1;
+  --sand-100: #f4eee3;
+  --sand-200: #e9dfce; /* hairlines */
+  --sand-300: #d8cab2; /* borders */
+
+  /* Deeper layer bands (Map staircase: darker = deeper) */
+  --band-01: #ffffff;
+  --band-02: #faf7f1;
+  --band-03: #f4eee3;
+  --band-04: #eee6d7;
+  --band-05: #e6dbc8;
+  --band-06: #dccfb8;
+  --border-05: #cdbda1;
+  --border-06: #c2b091;
+
+  /* Text */
+  --ink: #1e1a15; /* primary text */
+  --muted: #554b3f; /* muted text */
+  --muted-05: #4a4238; /* muted on deeper bands */
+  --muted-06: #40382e;
+
+  /* Accent */
+  --accent: #6f5433; /* umber */
+  --accent-hover: #4a3720;
+
+  /* Track for progress bars */
+  --track: rgba(30, 26, 21, 0.14);
+
+  /* Typography */
+  --font-heading: "Space Grotesk", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Radii */
+  --radius-card: 14px;
+  --radius-panel: 20px; /* 18–22px range */
+  --radius-pill: 999px;
+
+  /* Layout */
+  --tap-min: 44px; /* minimum touch target */
+  --pad-x: clamp(20px, 4vw, 56px);
+  --pad-y: clamp(28px, 5vw, 64px);
+}

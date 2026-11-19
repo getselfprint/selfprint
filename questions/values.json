@@ -1,0 +1,114 @@
+{
+  "layer": "values",
+  "version": 1,
+  "seeds": [
+    {
+      "id": "val_work_family",
+      "type": "dilemma",
+      "text": "Your team needs you the weekend of a family event you promised to attend. What do you do, and what do you tell each side?",
+      "followUpHints": [
+        "Who did you actually call first?",
+        "What did you tell the side you let down?"
+      ]
+    },
+    {
+      "id": "val_rank_four",
+      "type": "forced_ranking",
+      "text": "Rank these when they collide: being honest, being kind, being loyal, being right. Then tell me about a time your top two collided.",
+      "followUpHints": [
+        "Which one did you drop, in the real example?",
+        "Would you rank them the same way today?"
+      ]
+    },
+    {
+      "id": "val_lend_money",
+      "type": "dilemma",
+      "text": "A close friend asks to borrow money you'd set aside for a trip you were looking forward to. What do you do?",
+      "followUpHints": [
+        "What did you say to them in the moment?",
+        "Did you tell them it was trip money?"
+      ]
+    },
+    {
+      "id": "val_unfair_credit",
+      "type": "critical_incident",
+      "text": "Tell me about a time someone took credit for your work. What did you do?",
+      "followUpHints": [
+        "Did you say anything to them directly?",
+        "What did you wish you'd done instead?"
+      ]
+    },
+    {
+      "id": "val_rule_vs_right",
+      "type": "dilemma",
+      "text": "You find a rule at work or in a group is clearly producing an unfair result in one case. Following it hurts someone; breaking it risks you. What do you do?",
+      "followUpHints": [
+        "Did you follow the rule or break it, the last time this came up?",
+        "Who carried the cost of your choice?"
+      ]
+    },
+    {
+      "id": "val_hard_truth",
+      "type": "dilemma",
+      "text": "Someone you care about asks your honest opinion on something they've worked hard on, and you think it's weak. What do you actually say?",
+      "followUpHints": [
+        "What were your exact first words?",
+        "Did you soften it, and why?"
+      ]
+    },
+    {
+      "id": "val_promise_cost",
+      "type": "critical_incident",
+      "text": "Tell me about a promise you kept even though it ended up costing you more than you expected.",
+      "followUpHints": [
+        "Was there a moment you considered backing out?",
+        "Why did you hold to it?"
+      ]
+    },
+    {
+      "id": "val_rank_life",
+      "type": "forced_ranking",
+      "text": "Rank what you protect first when life gets tight: your health, your close relationships, your work, your freedom to choose. Then give me a time two of these fought.",
+      "followUpHints": [
+        "Which did you sacrifice?",
+        "Did it feel like the right call afterward?"
+      ]
+    },
+    {
+      "id": "val_stranger_vs_own",
+      "type": "dilemma",
+      "text": "You can help a stranger in real need, but only by giving up something that mattered to someone close to you. How do you decide?",
+      "followUpHints": [
+        "Has a version of this actually happened to you?",
+        "What tipped it one way?"
+      ]
+    },
+    {
+      "id": "val_stood_ground",
+      "type": "critical_incident",
+      "text": "Tell me about a time you stood your ground on something when it would have been far easier to let it go.",
+      "followUpHints": [
+        "What exactly did you refuse to do?",
+        "What did it cost you?"
+      ]
+    },
+    {
+      "id": "val_caught_wrong",
+      "type": "critical_incident",
+      "text": "Tell me about a time you realized partway through that you were in the wrong. What did you do next?",
+      "followUpHints": [
+        "Did you admit it, and to whom?",
+        "How quickly?"
+      ]
+    },
+    {
+      "id": "val_loyalty_test",
+      "type": "dilemma",
+      "text": "A friend does something you think is genuinely wrong and asks you to keep it between you. Do you keep it? What would change your answer?",
+      "followUpHints": [
+        "Where exactly is your line?",
+        "Have you ever crossed your own line here?"
+      ]
+    }
+  ]
+}

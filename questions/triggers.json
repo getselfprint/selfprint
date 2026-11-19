@@ -1,0 +1,114 @@
+{
+  "layer": "triggers",
+  "version": 1,
+  "seeds": [
+    {
+      "id": "trg_interrupted",
+      "type": "reaction_probe",
+      "text": "Someone interrupts you for the third time in a meeting. What happens in the next ten seconds? What do you do an hour later?",
+      "followUpHints": [
+        "Did you say anything in the moment?",
+        "How long did it stay with you?"
+      ]
+    },
+    {
+      "id": "trg_patience",
+      "type": "sentence_completion",
+      "text": "Finish this honestly: \"I lose patience fastest when…\"",
+      "followUpHints": [
+        "Can you give me the last time that happened?",
+        "What did you do?"
+      ]
+    },
+    {
+      "id": "trg_criticism",
+      "type": "reaction_probe",
+      "text": "You open a message that criticizes something you made. What's your first reaction - in your body and your head - and what do you do before replying?",
+      "followUpHints": [
+        "How long before you replied?",
+        "What did the reply say?"
+      ]
+    },
+    {
+      "id": "trg_calm",
+      "type": "sentence_completion",
+      "text": "Finish this: \"The fastest way to calm me down is…\"",
+      "followUpHints": [
+        "Who or what usually does that?",
+        "When did it last work?"
+      ]
+    },
+    {
+      "id": "trg_plan_falls",
+      "type": "reaction_probe",
+      "text": "A plan you were counting on falls through at the last minute. Walk me through the next hour.",
+      "followUpHints": [
+        "What was the very first thing you did?",
+        "Did you tell anyone how you felt?"
+      ]
+    },
+    {
+      "id": "trg_anxious_tell",
+      "type": "sentence_completion",
+      "text": "Finish this: \"I know I'm anxious when I start…\"",
+      "followUpHints": [
+        "What do others notice first?",
+        "What do you do once you notice?"
+      ]
+    },
+    {
+      "id": "trg_loved_snaps",
+      "type": "reaction_probe",
+      "text": "Someone you love snaps at you unfairly. What do you do in the moment?",
+      "followUpHints": [
+        "Did you snap back, go quiet, or something else?",
+        "What did you do an hour later?"
+      ]
+    },
+    {
+      "id": "trg_overwhelmed_drop",
+      "type": "sentence_completion",
+      "text": "Finish this: \"When I'm overwhelmed, the first thing I drop is…\"",
+      "followUpHints": [
+        "What's an example?",
+        "Do you notice at the time, or later?"
+      ]
+    },
+    {
+      "id": "trg_late_traffic",
+      "type": "reaction_probe",
+      "text": "You're stuck and will clearly be late for something that matters. What's happening in your head and body?",
+      "followUpHints": [
+        "What do you do with that feeling?",
+        "Do you let the other person know?"
+      ]
+    },
+    {
+      "id": "trg_settled",
+      "type": "sentence_completion",
+      "text": "Finish this: \"I feel most settled when…\"",
+      "followUpHints": [
+        "When did you last feel that?",
+        "What makes it hard to get there?"
+      ]
+    },
+    {
+      "id": "trg_stranger_rude",
+      "type": "reaction_probe",
+      "text": "A stranger is rude to you in public. What do you actually do?",
+      "followUpHints": [
+        "Did you respond or let it go?",
+        "How did you feel afterward?"
+      ]
+    },
+    {
+      "id": "trg_worst_feeling",
+      "type": "sentence_completion",
+      "text": "Finish this: \"The feeling I'm worst at handling is…\"",
+      "followUpHints": [
+        "What do you do when it shows up?",
+        "Give me a recent example."
+      ]
+    }
+  ]
+}

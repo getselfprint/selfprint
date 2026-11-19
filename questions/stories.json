@@ -1,0 +1,111 @@
+{
+  "layer": "stories",
+  "version": 1,
+  "seeds": [
+    {
+      "id": "sto_proud_unseen",
+      "type": "critical_incident",
+      "text": "Tell me about a time you were proud of something nobody else noticed.",
+      "followUpHints": [
+        "What exactly did you do?",
+        "Why did it matter to you that no one saw it?"
+      ]
+    },
+    {
+      "id": "sto_changed_mind",
+      "type": "critical_incident",
+      "text": "Tell me about a time you changed your mind about something that mattered. What moved you?",
+      "followUpHints": [
+        "What did you believe before?",
+        "What was the moment it shifted?"
+      ]
+    },
+    {
+      "id": "sto_hard_choice_young",
+      "type": "critical_incident",
+      "text": "Think back to a decision you made before you were twenty that you still think about. What happened?",
+      "followUpHints": ["What did you actually do?", "What did it teach you?"]
+    },
+    {
+      "id": "sto_turning_point",
+      "type": "critical_incident",
+      "text": "Was there a moment that split your life into a before and an after? Tell me about it.",
+      "followUpHints": [
+        "What changed in how you act, day to day?",
+        "Who else was part of it?"
+      ]
+    },
+    {
+      "id": "sto_failed_badly",
+      "type": "critical_incident",
+      "text": "Tell me about a time you failed at something that mattered to you. What did you do in the days after?",
+      "followUpHints": [
+        "Who did you tell, and who didn't you?",
+        "What did you take from it?"
+      ]
+    },
+    {
+      "id": "sto_someone_believed",
+      "type": "critical_incident",
+      "text": "Tell me about someone who believed in you before you believed in yourself. What did they do?",
+      "followUpHints": [
+        "What did they actually say or do?",
+        "How did it change what you did next?"
+      ]
+    },
+    {
+      "id": "sto_stood_up_for",
+      "type": "critical_incident",
+      "text": "Tell me about a time you stood up for someone else. What was at stake?",
+      "followUpHints": [
+        "What did you risk?",
+        "Would you do it the same way again?"
+      ]
+    },
+    {
+      "id": "sto_left_behind",
+      "type": "critical_incident",
+      "text": "Tell me about something or someone you walked away from. Why then?",
+      "followUpHints": [
+        "What was the last straw?",
+        "What did you feel the day after?"
+      ]
+    },
+    {
+      "id": "sto_made_something",
+      "type": "critical_incident",
+      "text": "Tell me about a time you made something from nothing - a project, a group, a habit, a repair. How did it start?",
+      "followUpHints": [
+        "What was the first concrete step you took?",
+        "What kept you going?"
+      ]
+    },
+    {
+      "id": "sto_kindness_received",
+      "type": "critical_incident",
+      "text": "Tell me about a time a stranger or near-stranger was unexpectedly kind to you. What happened?",
+      "followUpHints": [
+        "What did they do exactly?",
+        "Did it change how you treat people?"
+      ]
+    },
+    {
+      "id": "sto_scared_did_anyway",
+      "type": "critical_incident",
+      "text": "Tell me about a time you were scared and did the thing anyway.",
+      "followUpHints": [
+        "What were you actually afraid of?",
+        "What got you to move?"
+      ]
+    },
+    {
+      "id": "sto_recurring_lesson",
+      "type": "critical_incident",
+      "text": "Is there a lesson life seems to keep teaching you? Tell me about the time it landed hardest.",
+      "followUpHints": [
+        "When did you first notice the pattern?",
+        "Have you actually learned it yet?"
+      ]
+    }
+  ]
+}

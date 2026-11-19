@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!--
+      The app is the client-side application and carries no public content.
+      Per spec §17 it must be noindex; the public marketing/legal site is a
+      separate pre-rendered build mounted at `/`.
+    -->
+    <meta name="robots" content="noindex, nofollow" />
+
+    <!--
+      PRODUCTION Content-Security-Policy (spec §15.3).
+      Enforce this as an HTTP response header at the static host, NOT here -
+      a strict meta CSP breaks Vite's dev HMR (inline scripts + ws). The
+      `connect-src` list must contain ONLY 'self' plus the provider the user
+      configured (e.g. https://api.anthropic.com). No third-party scripts,
+      no remote fonts (bundled locally via @fontsource), no analytics.
+
+        default-src 'self';
+        script-src 'self';
+        style-src 'self' 'unsafe-inline';
+        img-src 'self' data:;
+        font-src 'self';
+        connect-src 'self' https://api.anthropic.com;
+        object-src 'none';
+        base-uri 'self';
+        frame-ancestors 'none';
+    -->
+
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#1E1A15" />
+    <title>Selfprint</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

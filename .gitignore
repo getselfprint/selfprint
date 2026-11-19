@@ -1,0 +1,28 @@
+node_modules
+dist
+dist-ssr
+*.local
+.vite
+
+# Deploy / server config (private: server IP, nginx, IndexNow key). Everything
+# deploy-related lives in .infra so one line keeps it out of the public repo.
+.infra/
+
+# Internal captures: design iterations, debug shots, and the e2e walkthrough
+# screenshots. Kept locally, not published (they go stale fast and aren't needed
+# to build or use the project). The logo, used by the README, is the exception.
+docs/brand/*
+!docs/brand/logo.png
+!docs/brand/logo.svg
+docs/e2e/
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+
+# Logs
+logs
+*.log
+npm-debug.log*

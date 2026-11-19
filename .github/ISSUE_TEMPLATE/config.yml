@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security or privacy report
+    url: https://github.com/getselfprint/selfprint/blob/main/SECURITY.md
+    about: Please report vulnerabilities privately, not as a public issue.
+  - name: Question or discussion
+    url: https://github.com/getselfprint/selfprint/discussions
+    about: Ask questions and share ideas in Discussions.

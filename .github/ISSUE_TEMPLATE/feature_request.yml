@@ -1,0 +1,25 @@
+name: Feature request
+description: Suggest an idea or improvement
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: The need or frustration behind the request.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: false
+  - type: checkboxes
+    id: principles
+    attributes:
+      label: Fits the project's principles
+      options:
+        - label: Keeps data local by default (no new backend or tracking)
+        - label: Doesn't require AI for something that should be exact or private
+        - label: The user stays in control (readable, editable, deletable)

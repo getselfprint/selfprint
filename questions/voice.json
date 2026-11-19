@@ -1,0 +1,114 @@
+{
+  "layer": "voice",
+  "version": 1,
+  "seeds": [
+    {
+      "id": "voc_cancel_text",
+      "type": "voice_sample",
+      "text": "A friend cancels on you for the second time this month. Write the exact text you'd send.",
+      "followUpHints": [
+        "Would you really send that, as written?",
+        "What would you never say here?"
+      ]
+    },
+    {
+      "id": "voc_mixed_congrats",
+      "type": "voice_sample",
+      "text": "Write how you'd congratulate a close friend who just got a job you also wanted.",
+      "followUpHints": [
+        "Is any of the mixed feeling in there?",
+        "How do you usually sign off?"
+      ]
+    },
+    {
+      "id": "voc_critique_open",
+      "type": "voice_sample",
+      "text": "You need to tell a coworker their work has a real problem. Write your opening line, exactly as you'd say it.",
+      "followUpHints": [
+        "Do you soften it or get straight to it?",
+        "What tone are you going for?"
+      ]
+    },
+    {
+      "id": "voc_humor",
+      "type": "sentence_completion",
+      "text": "Finish this: \"When I think something's funny, I usually…\"",
+      "followUpHints": [
+        "What kind of humor is most you?",
+        "Give me a line you'd actually say."
+      ]
+    },
+    {
+      "id": "voc_apology",
+      "type": "voice_sample",
+      "text": "Write a short apology to someone you let down. Use your real words.",
+      "followUpHints": [
+        "Do you explain, or just own it?",
+        "What would feel fake to you here?"
+      ]
+    },
+    {
+      "id": "voc_group_decline",
+      "type": "voice_sample",
+      "text": "A group chat is planning something you don't want to do. Write your reply.",
+      "followUpHints": [
+        "Do you give a reason?",
+        "How direct are you with this group?"
+      ]
+    },
+    {
+      "id": "voc_argue",
+      "type": "sentence_completion",
+      "text": "Finish this: \"When I argue, I tend to…\"",
+      "followUpHints": [
+        "Give me a recent example of that.",
+        "How does it usually end?"
+      ]
+    },
+    {
+      "id": "voc_comfort",
+      "type": "voice_sample",
+      "text": "Write how you'd comfort someone who just got bad news.",
+      "followUpHints": [
+        "Do you reassure, listen, or fix?",
+        "What words do you reach for?"
+      ]
+    },
+    {
+      "id": "voc_not_okay",
+      "type": "voice_sample",
+      "text": "Someone asks \"how are you?\" and you're not okay. Write what you actually say.",
+      "followUpHints": [
+        "Does it change with who's asking?",
+        "How honest do you get?"
+      ]
+    },
+    {
+      "id": "voc_phrases",
+      "type": "sentence_completion",
+      "text": "Finish this: \"The phrases I catch myself saying a lot are…\"",
+      "followUpHints": [
+        "Where did they come from?",
+        "Any you say without meaning them?"
+      ]
+    },
+    {
+      "id": "voc_tease",
+      "type": "voice_sample",
+      "text": "Write how you'd tease a close friend you're comfortable with.",
+      "followUpHints": [
+        "Where's your line between teasing and unkind?",
+        "Would they tease you back the same way?"
+      ]
+    },
+    {
+      "id": "voc_turn_down",
+      "type": "voice_sample",
+      "text": "Turn down an invitation you have no interest in. Write it as you'd send it.",
+      "followUpHints": [
+        "Honest, or a white lie?",
+        "Do you leave the door open?"
+      ]
+    }
+  ]
+}
