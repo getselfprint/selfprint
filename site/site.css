@@ -319,9 +319,10 @@ a:hover {
 }
 
 /* How it works */
-.how > .label-mono {
+.how > .label-mono,
+.showcase > .label-mono {
   display: block;
-  margin-bottom: 24px;
+  margin-bottom: 22px;
 }
 .steps {
   display: grid;
@@ -356,6 +357,19 @@ a:hover {
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 24px 40px;
   align-items: stretch;
+}
+.showcase-left {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.showcase-left .sec-head {
+  margin-bottom: 0;
+  max-width: none;
+}
+/* Fill the left column so the claim card ends level with the taller export. */
+.showcase-left .claim-card {
+  flex: 1 1 auto;
 }
 .claim-card {
   background: var(--sand-50);
