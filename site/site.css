@@ -148,12 +148,20 @@ a:hover {
 .site-nav a:hover {
   color: var(--ink);
 }
-.site-nav .ext {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+/* The header CTAs reuse the hero button styles; re-assert their colors so the
+   generic .site-nav a rules don't override them, and dim the external icon. */
+.site-nav .btn {
+  text-decoration: none;
 }
-.site-nav .ext svg {
+.site-nav .btn-secondary,
+.site-nav .btn-secondary:hover {
+  color: var(--ink);
+}
+.site-nav .btn-primary,
+.site-nav .btn-primary:hover {
+  color: var(--ground);
+}
+.site-nav .btn svg {
   opacity: 0.7;
 }
 .site-nav .pill {
@@ -349,19 +357,6 @@ a:hover {
   gap: 24px 40px;
   align-items: stretch;
 }
-.showcase-left {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-.showcase-left .sec-head {
-  margin-bottom: 0;
-  max-width: none;
-}
-/* Fill the left column so its claim card ends level with the taller export. */
-.showcase-left .claim-card {
-  flex: 1 1 auto;
-}
 .claim-card {
   background: var(--sand-50);
   border: 1px solid var(--sand-300);
@@ -393,6 +388,7 @@ a:hover {
   display: flex;
   flex-direction: column;
   gap: 5px;
+  margin-top: auto;
   padding-top: 13px;
   border-top: 1px solid var(--sand-200);
 }
