@@ -43,10 +43,10 @@ const FACTS_DESC =
 
 /**
  * Map - home, first run and every return. The six layers as the beige
- * staircase, each with one honest state, and a single "YOUR ONE NEXT STEP" card
- * whose Resume button is always the next thing to do. Rows are read-only; you
- * move through the flow with Resume and the top menu. The in-background model
- * download shows its progress here (percent, MB, ETA) without blocking anything.
+ * staircase, each with one honest state. The active layer (your next step)
+ * expands in place with its one-line description and the Resume button, so the
+ * staircase is the single call to action - no separate banner. Other rows are
+ * read-only. The in-background model download shows its progress here.
  */
 export function MapScreen() {
   const { claims, answers, draft, loading } = useMapState();
@@ -79,9 +79,20 @@ export function MapScreen() {
   }
 
   const factsPending = coverage.facts.confirmed === 0;
-  const activeLayer = pickInterviewLayer((l) => coverage[l].status);
-  // Prefer an exact in-progress draft; else the earliest unfinished layer.
-  const resumeId = draft?.layer ?? activeLayer;
+  // Skip interview layers whose questions are exhausted (answered in full but
+  // 0 claims) so the next step moves past them instead of looping back.
+  const activeLayer = pickInterviewLayer(
+    (l) => coverage[l].status,
+    (l) => coverage[l].answered < QUESTIONS,
+  );
+  // Prefer an exact in-progress draft - but only if its layer still has
+  // questions left; a draft for a finished/exhausted layer must not keep it
+  // pinned as the next step (else you can never move past it).
+  const draftUsable =
+    !!draft &&
+    coverage[draft.layer].status !== "complete" &&
+    coverage[draft.layer].answered < QUESTIONS;
+  const resumeId = (draftUsable ? draft!.layer : null) ?? activeLayer;
   const resumeDef = resumeId ? LAYER_BY_ID[resumeId] : null;
 
   // The single next step: Facts first (no AI), then the interview layers.
@@ -89,13 +100,13 @@ export function MapScreen() {
     | { def: (typeof LAYERS)[number]; to: string; desc: string }
     | null = null;
   if (factsPending) {
-    next = { def: LAYER_BY_ID.facts, to: "/facts", desc: FACTS_DESC };
+    next = { def: LAYER_BY_ID.facts, to: "/interview?layer=facts", desc: FACTS_DESC };
   } else if (resumeDef) {
     next = {
       def: resumeDef,
       to: "/interview",
-      desc: draft
-        ? `Pick up where you left off - question ${Math.min(draft.questionsAsked + 1, QUESTIONS)} of ${QUESTIONS}. If the model is still downloading when you get there, you'll see its progress, not a dead end.`
+      desc: draftUsable
+        ? `Pick up where you left off - question ${Math.min(draft!.questionsAsked + 1, QUESTIONS)} of ${QUESTIONS}. If the model is still downloading when you get there, you'll see its progress, not a dead end.`
         : `${resumeDef.intro ?? resumeDef.subtitle} If the model is still downloading, you'll see its progress, not a dead end.`,
     };
   }
@@ -109,77 +120,42 @@ export function MapScreen() {
     >
       <div className="w-full flex flex-col gap-6">
         <div className="flex flex-col gap-2">
-          <span className="label-mono">Map - Home · /studio/</span>
           <h1 className="m-0 font-heading text-[clamp(32px,4vw,50px)] leading-[1.04] tracking-[-0.02em]">
             {heading}
           </h1>
           <p className="m-0 max-w-[62ch] text-[15px] leading-[1.55] text-muted">
             This is home - first run and every return. Six layers, one honest
-            state each. The one big button below is always your next step.
+            state each. The highlighted layer is always your next step.
           </p>
-        </div>
-
-        <DownloadBanner />
-
-        {/* YOUR ONE NEXT STEP */}
-        <section className="flex flex-col gap-3 p-6 bg-sand-50 border border-sand-300 rounded-panel">
-          {next ? (
-            <>
-              <span className="label-mono">Your one next step</span>
-              <h2 className="m-0 font-heading text-[clamp(22px,2.4vw,28px)] font-medium">
-                Layer {next.def.num} · {next.def.name}
-              </h2>
-              <p className="m-0 max-w-[72ch] text-[15px] leading-[1.55] text-muted">
-                {next.desc}
-              </p>
-              <Link
-                to={next.to}
-                className="mt-2 self-start inline-flex items-center gap-2 min-h-[48px] px-6 rounded-pill bg-ink text-ground no-underline text-[15px] font-medium hover:text-ground hover:opacity-90"
-              >
-                Resume
-                <svg
-                  aria-hidden="true"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M5 12h14" />
-                  <path d="M13 6l6 6-6 6" />
-                </svg>
-              </Link>
-            </>
-          ) : (
-            <>
-              <span className="label-mono">Your map is complete</span>
-              <h2 className="m-0 font-heading text-[clamp(22px,2.4vw,28px)] font-medium">
-                Every layer has claims.
-              </h2>
-              <p className="m-0 max-w-[72ch] text-[15px] leading-[1.55] text-muted">
-                Read, edit, or export your profile - or run a diagnostic test in
-                Settings to see how well the model answers like you.
-              </p>
-              <Link
-                to="/profile"
-                className="mt-2 self-start inline-flex items-center min-h-[48px] px-6 rounded-pill bg-ink text-ground no-underline text-[15px] font-medium hover:text-ground hover:opacity-90"
-              >
-                Open profile
-              </Link>
-            </>
-          )}
           {ratedCount >= MATCH_SCORE_MIN_TESTS && score !== null && (
             <span className="label-mono mt-1">
               Match score {score.toFixed(1)} / 5 · last{" "}
               {Math.min(ratedCount, 10)} tests
             </span>
           )}
-        </section>
+        </div>
 
-        {/* The staircase */}
+        <DownloadBanner />
+
+        {!next && (
+          <div className="flex flex-wrap items-center justify-between gap-4 p-5 bg-sand-50 border border-sand-300 rounded-panel">
+            <div className="flex flex-col gap-0.5">
+              <span className="label-mono">Your map is complete</span>
+              <span className="text-[15px] text-muted">
+                Every layer has claims. Read, edit, or export your profile - or
+                run a diagnostic test in Settings.
+              </span>
+            </div>
+            <Link
+              to="/profile"
+              className="inline-flex items-center min-h-[44px] px-5 rounded-pill bg-ink text-ground no-underline text-sm font-medium"
+            >
+              Open profile
+            </Link>
+          </div>
+        )}
+
+        {/* The staircase - the active layer expands with its next-step CTA */}
         <section aria-label="Layers" className="flex flex-col gap-2.5">
           {LAYERS.map((layer, i) => {
             const cov = coverage[layer.id];
@@ -227,6 +203,68 @@ export function MapScreen() {
                 ? cov.confirmed > 0
                 : cov.status === "complete";
             const pill = statusPill(layer.id, cov);
+            const isActive = next?.def.id === layer.id;
+
+            // The active layer (your next step) expands in place: its badge
+            // row, a one-line description, and the Resume button.
+            if (isActive && next) {
+              return (
+                <div
+                  key={layer.id}
+                  className="flex flex-col gap-3.5 rounded-card border-2 py-5 px-[22px]"
+                  style={{
+                    background: `var(${layer.band})`,
+                    borderColor: "var(--ink)",
+                    marginLeft,
+                  }}
+                >
+                  <div className="flex flex-wrap items-center gap-y-2 gap-x-4">
+                    <LayerBadge
+                      num={layer.num}
+                      complete={complete}
+                      muted={layer.muted}
+                    />
+                    <div className="flex-[1_1_200px] min-w-0 flex flex-col gap-0.5">
+                      <span className="label-mono text-accent">
+                        Your next step
+                      </span>
+                      <span className="font-heading text-[20px] font-medium">
+                        {layer.name}
+                      </span>
+                    </div>
+                    <span className="label-mono rounded-pill px-2.5 py-1 border border-sand-300 text-muted">
+                      {pill.text}
+                    </span>
+                  </div>
+                  <p
+                    className="m-0 text-[15px] leading-[1.5] max-w-[72ch]"
+                    style={{ color: `var(${layer.muted})` }}
+                  >
+                    {next.desc}
+                  </p>
+                  <Link
+                    to={next.to}
+                    className="self-start inline-flex items-center gap-2 min-h-[48px] px-6 rounded-pill bg-ink text-ground no-underline text-[15px] font-medium hover:text-ground hover:opacity-90"
+                  >
+                    Resume
+                    <svg
+                      aria-hidden="true"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M5 12h14" />
+                      <path d="M13 6l6 6-6 6" />
+                    </svg>
+                  </Link>
+                </div>
+              );
+            }
 
             return (
               <div

@@ -44,7 +44,6 @@ export function ChooseModelScreen() {
     >
       <div className="w-full flex flex-col gap-6">
         <div className="flex flex-col gap-1.5">
-          <span className="label-mono">How it runs · /studio/model</span>
           <h1 className="m-0 font-heading text-[clamp(30px,3.6vw,44px)] tracking-[-0.02em]">
             How it runs
           </h1>
