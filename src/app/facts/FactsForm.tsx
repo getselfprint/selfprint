@@ -1,7 +1,7 @@
 import { type ReactNode, useEffect, useState } from "react";
 import { Button } from "@/app/components/ui";
 import { useStore } from "@/app/vault/VaultContext";
-import { ChipsInput, YearBoxes } from "./FactInputs";
+import { ChipsInput } from "./FactInputs";
 import {
   type FactsData,
   formatBorn,
@@ -14,90 +14,31 @@ import {
 const FIELD =
   "border border-sand-300 rounded-[10px] px-3.5 py-2.5 bg-ground text-ink text-base placeholder:text-muted focus:border-accent focus:outline-none";
 
-type Kind = "text" | "born" | "chips" | "textarea";
-
-/** The nine facts, in the order shown on the screen; numbering follows this. */
-const DISPLAY: {
-  key: string;
-  label: string;
-  kind: Kind;
-  full?: boolean;
-  placeholder?: string;
-}[] = [
-  { key: "name", label: "Name", kind: "text", placeholder: "What you go by" },
-  { key: "born", label: "Born", kind: "born" },
-  {
-    key: "languages",
-    label: "Languages",
-    kind: "chips",
-    full: true,
-    placeholder: "Add one language at a time…",
-  },
-  { key: "work", label: "Work / role", kind: "text", placeholder: "What you do" },
-  { key: "height", label: "Height", kind: "text", placeholder: "178 cm · 5'10\"" },
-  {
-    key: "household",
-    label: "Household",
-    kind: "text",
-    full: true,
-    placeholder: "Who and what you live with - partner, kids, pets",
-  },
-  {
-    key: "places",
-    label: "Places lived",
-    kind: "chips",
-    full: true,
-    placeholder: "Add one place at a time…",
-  },
-  {
-    key: "routine",
-    label: "A typical day",
-    kind: "textarea",
-    full: true,
-    placeholder: "Your usual rhythm",
-  },
-  {
-    key: "tastes",
-    label: "Tastes",
-    kind: "chips",
-    full: true,
-    placeholder: "Add one at a time - things you love or can't stand",
-  },
-];
-
-function Card({
-  n,
+/** A label + field, sized to its content (not stretched full width). */
+function Field({
   label,
-  full,
   children,
+  className = "",
 }: {
-  n: number;
   label: string;
-  full?: boolean;
   children: ReactNode;
+  className?: string;
 }) {
   return (
-    <div
-      className={`rounded-card border border-sand-300 bg-ground p-4 flex flex-col gap-2.5 ${
-        full ? "sm:col-span-2" : ""
-      }`}
-    >
-      <div className="flex items-center justify-between gap-3">
-        <span className="label-mono">
-          {n} · {label}
-        </span>
-        <span className="label-mono text-muted">Stated claim {n}</span>
-      </div>
+    <label className={`flex flex-col gap-1.5 ${className}`}>
+      <span className="label-mono text-muted">{label}</span>
       {children}
-    </div>
+    </label>
   );
 }
 
 /**
- * The Facts form (Layer 01) - a single page of nine numbered, no-AI fields, each
- * one Stated claim. Chip fields take one item at a time and never split on a
- * comma. On save it persists the data and regenerates the facts-layer claims
- * (the form is the editor; claims are the queryable representation).
+ * The Facts form (Layer 01) - a calm, compact profile card rather than a long
+ * numbered questionnaire. Related facts are grouped (the basics, then an
+ * optional "a bit more") and packed several to a row with content-sized inputs.
+ * Chip fields take one item at a time and never split on a comma. Saving
+ * persists the data and regenerates the facts-layer claims (the form is the
+ * editor; claims are the queryable representation).
  */
 export function FactsForm({ onDone }: { onDone?: () => void }) {
   const store = useStore();
@@ -128,54 +69,119 @@ export function FactsForm({ onDone }: { onDone?: () => void }) {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {DISPLAY.map((f, i) => (
-          <Card key={f.key} n={i + 1} label={f.label} full={f.full}>
-            {f.kind === "text" && (
+      <div className="rounded-panel border border-sand-300 bg-sand-50 p-6 sm:p-7 flex flex-col gap-7">
+        {/* The basics */}
+        <div className="flex flex-wrap gap-x-8 gap-y-5">
+          <Field label="Name" className="w-[220px]">
+            <input
+              className={FIELD}
+              placeholder="What you go by"
+              value={data.name ?? ""}
+              onChange={(e) => set("name", e.target.value)}
+            />
+          </Field>
+
+          <Field label="Born">
+            <div className="flex items-center gap-2">
               <input
-                className={`${FIELD} w-full`}
-                placeholder={f.placeholder}
-                value={data[f.key] ?? ""}
-                onChange={(e) => set(f.key, e.target.value)}
+                className={`${FIELD} w-[84px] text-center`}
+                inputMode="numeric"
+                maxLength={4}
+                placeholder="Year"
+                value={born.year}
+                onChange={(e) =>
+                  set(
+                    "born",
+                    formatBorn(
+                      e.target.value.replace(/\D/g, "").slice(0, 4),
+                      born.place,
+                    ),
+                  )
+                }
               />
-            )}
-            {f.kind === "born" && (
-              <div className="flex items-center gap-2 flex-wrap">
-                <YearBoxes
-                  value={born.year}
-                  onChange={(y) => set("born", formatBorn(y, born.place))}
-                />
-                <input
-                  className={`${FIELD} flex-1 min-w-[130px]`}
-                  placeholder="where"
-                  value={born.place}
-                  onChange={(e) =>
-                    set("born", formatBorn(born.year, e.target.value))
-                  }
-                />
-              </div>
-            )}
-            {f.kind === "chips" && (
+              <input
+                className={`${FIELD} w-[170px]`}
+                placeholder="where"
+                value={born.place}
+                onChange={(e) => set("born", formatBorn(born.year, e.target.value))}
+              />
+            </div>
+          </Field>
+
+          <Field label="Height" className="w-[130px]">
+            <input
+              className={FIELD}
+              placeholder="e.g. 178 cm"
+              value={data.height ?? ""}
+              onChange={(e) => set("height", e.target.value)}
+            />
+          </Field>
+
+          <Field label="Work / role" className="w-full max-w-[440px]">
+            <input
+              className={FIELD}
+              placeholder="What you do"
+              value={data.work ?? ""}
+              onChange={(e) => set("work", e.target.value)}
+            />
+          </Field>
+
+          <Field label="Languages" className="w-full">
+            <ChipsInput
+              value={data.languages ?? ""}
+              onChange={(v) => set("languages", v)}
+              placeholder="Add one language at a time…"
+            />
+          </Field>
+        </div>
+
+        {/* A bit more - optional */}
+        <div className="flex flex-col gap-5 pt-6 border-t border-sand-200">
+          <span className="label-mono">A bit more - optional</span>
+
+          <div className="flex flex-wrap gap-x-8 gap-y-5">
+            <Field label="Household" className="w-full max-w-[440px]">
+              <input
+                className={FIELD}
+                placeholder="Who you live with - partner, kids, pets"
+                value={data.household ?? ""}
+                onChange={(e) => set("household", e.target.value)}
+              />
+            </Field>
+
+            <Field label="Places lived" className="w-full">
               <ChipsInput
-                value={data[f.key] ?? ""}
-                onChange={(v) => set(f.key, v)}
-                placeholder={f.placeholder}
+                value={data.places ?? ""}
+                onChange={(v) => set("places", v)}
+                placeholder="Add one place at a time…"
               />
-            )}
-            {f.kind === "textarea" && (
+            </Field>
+
+            <Field label="A typical day" className="w-full">
               <textarea
                 rows={2}
                 className={`${FIELD} w-full leading-[1.5] resize-none`}
-                placeholder={f.placeholder}
-                value={data[f.key] ?? ""}
-                onChange={(e) => set(f.key, e.target.value)}
+                placeholder="Your usual rhythm"
+                value={data.routine ?? ""}
+                onChange={(e) => set("routine", e.target.value)}
               />
-            )}
-          </Card>
-        ))}
+            </Field>
+
+            <Field label="Tastes" className="w-full">
+              <ChipsInput
+                value={data.tastes ?? ""}
+                onChange={(v) => set("tastes", v)}
+                placeholder="Add one at a time - things you love or can't stand"
+              />
+            </Field>
+          </div>
+        </div>
       </div>
 
-      <div className="flex items-center gap-3 pt-1">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <span className="text-sm text-muted">
+          Each field you fill becomes one stated claim in your profile.
+        </span>
         <Button onClick={save} disabled={busy}>
           {busy ? "Saving…" : "Save facts"}
         </Button>

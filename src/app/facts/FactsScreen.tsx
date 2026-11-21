@@ -14,18 +14,21 @@ export function FactsScreen() {
     <main
       className={`flex-1 py-[var(--pad-y)] px-[var(--pad-x)] ${DOTS}`}
     >
-      <div className="w-full flex flex-col gap-6">
+      {/* A compact form reads best in a bounded column, left-aligned with the
+          page (not a centered island) - the fluid, full-width treatment is for
+          the Map, not a short profile form. */}
+      <div className="w-full max-w-[820px] flex flex-col gap-6">
         <div className="flex flex-col gap-1.5">
           <span className="label-mono">Layer 01 · Facts · /studio/facts</span>
           <h1 className="m-0 font-heading text-[clamp(28px,3.4vw,42px)] tracking-[-0.02em]">
             Facts
           </h1>
-          <p className="m-0 max-w-[72ch] text-[15px] leading-[1.6] text-muted">
-            Nine quick facts, typed by you. This is{" "}
-            <strong className="text-ink">Layer 01 on the Map</strong> - not a
-            setup step. It needs <strong className="text-ink">no AI</strong>, so
-            it works while the model is still downloading. Saving creates your{" "}
-            <strong className="text-ink">Stated claims</strong> in your Profile.
+          <p className="m-0 max-w-[68ch] text-[15px] leading-[1.6] text-muted">
+            A few quick facts about you, typed by you - fill what you like. This
+            is <strong className="text-ink">Layer 01 on the Map</strong>, not a
+            setup step; it needs <strong className="text-ink">no AI</strong>, so
+            it works while the model is still downloading. Each one becomes a{" "}
+            <strong className="text-ink">Stated claim</strong> in your Profile.
           </p>
         </div>
 
