@@ -346,8 +346,21 @@ a:hover {
 .showcase-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-  align-items: start;
+  gap: 24px 40px;
+  align-items: stretch;
+}
+.showcase-left {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.showcase-left .sec-head {
+  margin-bottom: 0;
+  max-width: none;
+}
+/* Fill the left column so its claim card ends level with the taller export. */
+.showcase-left .claim-card {
+  flex: 1 1 auto;
 }
 .claim-card {
   background: var(--sand-50);
