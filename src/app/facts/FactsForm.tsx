@@ -12,9 +12,9 @@ import {
 } from "./factsData";
 
 const FIELD =
-  "border border-sand-300 rounded-[10px] px-3.5 py-2.5 bg-ground text-ink text-base placeholder:text-muted focus:border-accent focus:outline-none";
+  "w-full border border-sand-300 rounded-[10px] px-3.5 py-2.5 bg-ground text-ink text-base placeholder:text-muted focus:border-accent focus:outline-none";
 
-/** A label + field, sized to its content (not stretched full width). */
+/** A label + field cell in the two-column form grid. */
 function Field({
   label,
   children,
@@ -33,9 +33,10 @@ function Field({
 }
 
 /**
- * The Facts form (Layer 01) - a calm, compact profile card rather than a long
- * numbered questionnaire. Related facts are grouped (the basics, then an
- * optional "a bit more") and packed several to a row with content-sized inputs.
+ * The Facts form (Layer 01) - a calm profile card rather than a long numbered
+ * questionnaire. Fields sit in a two-column grid (short facts pair up; chip
+ * lists and the typical-day note span the row) so the form fills its pane with
+ * content-sized inputs. Grouped into "the basics" and an optional "a bit more".
  * Chip fields take one item at a time and never split on a comma. Saving
  * persists the data and regenerates the facts-layer claims (the form is the
  * editor; claims are the queryable representation).
@@ -71,8 +72,8 @@ export function FactsForm({ onDone }: { onDone?: () => void }) {
     <div className="flex flex-col gap-5">
       <div className="rounded-panel border border-sand-300 bg-sand-50 p-6 sm:p-7 flex flex-col gap-7">
         {/* The basics */}
-        <div className="flex flex-wrap gap-x-8 gap-y-5">
-          <Field label="Name" className="w-[220px]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
+          <Field label="Name">
             <input
               className={FIELD}
               placeholder="What you go by"
@@ -84,7 +85,7 @@ export function FactsForm({ onDone }: { onDone?: () => void }) {
           <Field label="Born">
             <div className="flex items-center gap-2">
               <input
-                className={`${FIELD} w-[84px] text-center`}
+                className={`${FIELD} w-[84px] shrink-0 text-center`}
                 inputMode="numeric"
                 maxLength={4}
                 placeholder="Year"
@@ -100,7 +101,7 @@ export function FactsForm({ onDone }: { onDone?: () => void }) {
                 }
               />
               <input
-                className={`${FIELD} w-[170px]`}
+                className={`${FIELD} min-w-0`}
                 placeholder="where"
                 value={born.place}
                 onChange={(e) => set("born", formatBorn(born.year, e.target.value))}
@@ -108,7 +109,7 @@ export function FactsForm({ onDone }: { onDone?: () => void }) {
             </div>
           </Field>
 
-          <Field label="Height" className="w-[130px]">
+          <Field label="Height">
             <input
               className={FIELD}
               placeholder="e.g. 178 cm"
@@ -117,7 +118,7 @@ export function FactsForm({ onDone }: { onDone?: () => void }) {
             />
           </Field>
 
-          <Field label="Work / role" className="w-full max-w-[440px]">
+          <Field label="Work / role">
             <input
               className={FIELD}
               placeholder="What you do"
@@ -126,7 +127,7 @@ export function FactsForm({ onDone }: { onDone?: () => void }) {
             />
           </Field>
 
-          <Field label="Languages" className="w-full">
+          <Field label="Languages" className="sm:col-span-2">
             <ChipsInput
               value={data.languages ?? ""}
               onChange={(v) => set("languages", v)}
@@ -139,8 +140,8 @@ export function FactsForm({ onDone }: { onDone?: () => void }) {
         <div className="flex flex-col gap-5 pt-6 border-t border-sand-200">
           <span className="label-mono">A bit more - optional</span>
 
-          <div className="flex flex-wrap gap-x-8 gap-y-5">
-            <Field label="Household" className="w-full max-w-[440px]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
+            <Field label="Household">
               <input
                 className={FIELD}
                 placeholder="Who you live with - partner, kids, pets"
@@ -149,7 +150,7 @@ export function FactsForm({ onDone }: { onDone?: () => void }) {
               />
             </Field>
 
-            <Field label="Places lived" className="w-full">
+            <Field label="Places lived">
               <ChipsInput
                 value={data.places ?? ""}
                 onChange={(v) => set("places", v)}
@@ -157,17 +158,17 @@ export function FactsForm({ onDone }: { onDone?: () => void }) {
               />
             </Field>
 
-            <Field label="A typical day" className="w-full">
+            <Field label="A typical day" className="sm:col-span-2">
               <textarea
                 rows={2}
-                className={`${FIELD} w-full leading-[1.5] resize-none`}
+                className={`${FIELD} leading-[1.5] resize-none`}
                 placeholder="Your usual rhythm"
                 value={data.routine ?? ""}
                 onChange={(e) => set("routine", e.target.value)}
               />
             </Field>
 
-            <Field label="Tastes" className="w-full">
+            <Field label="Tastes" className="sm:col-span-2">
               <ChipsInput
                 value={data.tastes ?? ""}
                 onChange={(v) => set("tastes", v)}
