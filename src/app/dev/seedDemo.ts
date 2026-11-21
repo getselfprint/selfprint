@@ -2,6 +2,20 @@ import type { Claim, LayerId, MirrorResponse, TestRun } from "@/types/model";
 import { makeUserClaim } from "@/engine/confidence";
 import { newId } from "@/engine/session";
 import { type SelfprintStore, SETTINGS_KEYS } from "@/store";
+import { markFactsStepDone, saveFacts } from "@/app/facts/factsData";
+
+/** Fictional Facts for the up-front demo (a neighbourhood bakery owner). */
+const DEMO_FACTS: Record<string, string> = {
+  name: "Sam",
+  born: "1986, a small coastal town",
+  height: "173 cm",
+  languages: "English\nFrench",
+  work: "Runs a neighbourhood bakery",
+  places: "Brittany\nLisbon\nPortland, Oregon",
+  household: "Partner and an old rescue dog",
+  routine: "Up at 5 for the ovens, a quiet hour before the shop opens, home by six.",
+  tastes: "Sourdough, long walks, dry humour\nCan't stand waste or being rushed",
+};
 
 /**
  * DEV ONLY. Fills every interviewable layer with a coherent demo personality so
@@ -173,4 +187,35 @@ export async function seedDemoPersonality(store: SelfprintStore): Promise<void> 
   ];
   for (const t of testRuns) await store.tests.put({ id: newId(), ...t });
   void tested;
+}
+
+/**
+ * Enter the up-front demo: a fully filled fictional persona (Facts + every
+ * interviewable layer + Mirror + tests) so a new user can see a finished
+ * profile before they download a model or paste a key.
+ */
+export async function seedDemo(store: SelfprintStore): Promise<void> {
+  await saveFacts(store, DEMO_FACTS); // writes Facts + facts-layer claims
+  await seedDemoPersonality(store); // interview-layer claims, Mirror, tests
+  await markFactsStepDone(store);
+  await store.settings.set(SETTINGS_KEYS.demoMode, true);
+}
+
+/** Leave the demo and wipe everything it created, back to a clean first run. */
+export async function clearDemo(store: SelfprintStore): Promise<void> {
+  for (const c of await store.claims.all()) await store.claims.delete(c.id);
+  for (const a of await store.answers.all()) await store.answers.delete(a.id);
+  for (const k of await store.contradictions.all())
+    await store.contradictions.delete(k.id);
+  for (const t of await store.tests.all()) await store.tests.delete(t.id);
+  for (const m of await store.mirror.all()) await store.mirror.delete(m.id);
+  for (const key of [
+    SETTINGS_KEYS.facts,
+    SETTINGS_KEYS.factsStepDone,
+    SETTINGS_KEYS.mirrorSelf,
+    SETTINGS_KEYS.interviewDraft,
+    SETTINGS_KEYS.demoMode,
+  ]) {
+    await store.settings.delete(key);
+  }
 }

@@ -63,7 +63,7 @@ const run = async () => {
   page.setDefaultTimeout(15000);
 
   // 01 - Create passphrase
-  await page.goto(`${BASE}/app`);
+  await page.goto(`${BASE}/studio`);
   await page.getByText("Create your passphrase").waitFor();
   await shot(page, "01-create-passphrase");
   await page.getByLabel("Passphrase", { exact: true }).fill(PASS);

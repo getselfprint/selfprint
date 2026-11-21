@@ -1,7 +1,9 @@
 import { type ReactNode, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { SETTINGS_KEYS } from "@/store";
 import { ChooseHow } from "@/app/config/ChooseHow";
 import { useConfig } from "@/app/config/ConfigContext";
+import { DownloadBanner } from "@/app/model/DownloadBanner";
 import { useStore, useVault } from "@/app/vault/VaultContext";
 import { seedDemoPersonality } from "@/app/dev/seedDemo";
 import { NetworkPanel } from "@/app/net/NetworkPanel";
@@ -12,7 +14,23 @@ const NAV = [
   { id: "privacy", label: "Privacy and network" },
   { id: "security", label: "Security" },
   { id: "data", label: "Your data" },
+  { id: "diagnostics", label: "Diagnostics" },
 ];
+
+/**
+ * Reset the interview without wiping the whole app: clears in-progress answers,
+ * unconfirmed draft claims, and the saved session, while keeping Basics (Facts)
+ * and every confirmed claim. The escape hatch for a tangled session.
+ */
+async function resetInterviewSession(
+  store: ReturnType<typeof useStore>,
+): Promise<void> {
+  for (const a of await store.answers.all()) await store.answers.delete(a.id);
+  for (const c of await store.claims.all()) {
+    if (c.status === "draft") await store.claims.delete(c.id);
+  }
+  await store.settings.delete(SETTINGS_KEYS.interviewDraft);
+}
 
 /** Settings: a left sub-nav, the model picker, then privacy/security/data rows. */
 export function SettingsScreen() {
@@ -33,6 +51,8 @@ export function SettingsScreen() {
   const [showNet, setShowNet] = useState(false);
   const [showSec, setShowSec] = useState(false);
   const [confirmWipe, setConfirmWipe] = useState(false);
+  const [confirmReset, setConfirmReset] = useState(false);
+  const [resetting, setResetting] = useState(false);
   const [seeding, setSeeding] = useState(false);
 
   function go(id: string) {
@@ -67,8 +87,22 @@ export function SettingsScreen() {
         </nav>
 
         <div className="flex-1 min-w-[320px] flex flex-col gap-12">
-          <section id="model" className="scroll-mt-6">
+          <section id="model" className="scroll-mt-6 flex flex-col gap-5">
+            <DownloadBanner note={null} />
             <ChooseHow heading="How the interview runs" />
+            <div className="pt-6 border-t border-sand-200">
+              <Row
+                title="Facts (Layer 01)"
+                desc="Your nine Stated claims, typed by you - no AI. Edit them any time."
+              >
+                <Link
+                  to="/facts"
+                  className="inline-flex items-center min-h-[40px] px-4 rounded-pill border border-sand-300 bg-ground text-ink no-underline text-sm font-medium hover:bg-sand-100"
+                >
+                  Edit facts
+                </Link>
+              </Row>
+            </div>
           </section>
 
           <section
@@ -133,7 +167,7 @@ export function SettingsScreen() {
               desc="Back up everything to one encrypted file, or erase it from this device."
             >
               <Link
-                to="/app/export"
+                to="/export"
                 className="inline-flex items-center min-h-[40px] px-4 rounded-pill border border-sand-300 bg-ground text-ink no-underline text-sm font-medium hover:bg-sand-100"
               >
                 Back up
@@ -171,6 +205,64 @@ export function SettingsScreen() {
                 device, and starts a fresh empty profile. It cannot be undone.
               </span>
             )}
+
+            <div className="pt-4 border-t border-sand-200">
+              <Row
+                title="Reset the interview"
+                desc="Stuck in a loop, or 0 claims? This clears your in-progress answers and unconfirmed drafts so the interview starts fresh. Keeps your Basics and any confirmed claims."
+              >
+                {!confirmReset ? (
+                  <Secondary onClick={() => setConfirmReset(true)}>
+                    Reset interview
+                  </Secondary>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      disabled={resetting}
+                      onClick={async () => {
+                        setResetting(true);
+                        await resetInterviewSession(store);
+                        navigate("/");
+                      }}
+                      className="inline-flex items-center min-h-[40px] px-4 rounded-pill bg-ink text-ground text-sm font-medium disabled:opacity-40"
+                    >
+                      {resetting ? "Resetting…" : "Yes, reset the interview"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setConfirmReset(false)}
+                      className="inline-flex items-center min-h-[40px] px-4 rounded-pill text-sm text-muted hover:text-ink"
+                    >
+                      Cancel
+                    </button>
+                  </>
+                )}
+              </Row>
+            </div>
+          </section>
+
+          <section
+            id="diagnostics"
+            className="scroll-mt-6 pt-8 border-t border-sand-300 flex flex-col gap-4"
+          >
+            <Row
+              title="Diagnostics"
+              desc="Check how well the model answers like you (Test), or compare your self-scores with how someone else sees you (Mirror). Kept out of the main flow."
+            >
+              <Link
+                to="/test"
+                className="inline-flex items-center min-h-[40px] px-4 rounded-pill border border-sand-300 bg-ground text-ink no-underline text-sm font-medium hover:bg-sand-100"
+              >
+                Open test
+              </Link>
+              <Link
+                to="/mirror"
+                className="inline-flex items-center min-h-[40px] px-4 rounded-pill border border-sand-300 bg-ground text-ink no-underline text-sm font-medium hover:bg-sand-100"
+              >
+                Open mirror
+              </Link>
+            </Row>
           </section>
 
           {import.meta.env.DEV && (
@@ -185,7 +277,7 @@ export function SettingsScreen() {
                   onClick={async () => {
                     setSeeding(true);
                     await seedDemoPersonality(store);
-                    navigate("/app/profile");
+                    navigate("/profile");
                   }}
                   className="inline-flex items-center min-h-[40px] px-4 rounded-pill bg-ink text-ground text-sm font-medium disabled:opacity-40"
                 >

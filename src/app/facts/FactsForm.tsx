@@ -14,56 +14,96 @@ import {
 const FIELD =
   "border border-sand-300 rounded-[10px] px-3.5 py-2.5 bg-ground text-ink text-base placeholder:text-muted focus:border-accent focus:outline-none";
 
-function Labeled({
-  label,
-  children,
-  className = "",
-}: {
+type Kind = "text" | "born" | "chips" | "textarea";
+
+/** The nine facts, in the order shown on the screen; numbering follows this. */
+const DISPLAY: {
+  key: string;
   label: string;
+  kind: Kind;
+  full?: boolean;
+  placeholder?: string;
+}[] = [
+  { key: "name", label: "Name", kind: "text", placeholder: "What you go by" },
+  { key: "born", label: "Born", kind: "born" },
+  {
+    key: "languages",
+    label: "Languages",
+    kind: "chips",
+    full: true,
+    placeholder: "Add one language at a time…",
+  },
+  { key: "work", label: "Work / role", kind: "text", placeholder: "What you do" },
+  { key: "height", label: "Height", kind: "text", placeholder: "178 cm · 5'10\"" },
+  {
+    key: "household",
+    label: "Household",
+    kind: "text",
+    full: true,
+    placeholder: "Who and what you live with - partner, kids, pets",
+  },
+  {
+    key: "places",
+    label: "Places lived",
+    kind: "chips",
+    full: true,
+    placeholder: "Add one place at a time…",
+  },
+  {
+    key: "routine",
+    label: "A typical day",
+    kind: "textarea",
+    full: true,
+    placeholder: "Your usual rhythm",
+  },
+  {
+    key: "tastes",
+    label: "Tastes",
+    kind: "chips",
+    full: true,
+    placeholder: "Add one at a time - things you love or can't stand",
+  },
+];
+
+function Card({
+  n,
+  label,
+  full,
+  children,
+}: {
+  n: number;
+  label: string;
+  full?: boolean;
   children: ReactNode;
-  className?: string;
 }) {
   return (
-    <div className={`flex flex-col gap-1.5 ${className}`}>
-      <span className="label-mono">{label}</span>
+    <div
+      className={`rounded-card border border-sand-300 bg-ground p-4 flex flex-col gap-2.5 ${
+        full ? "sm:col-span-2" : ""
+      }`}
+    >
+      <div className="flex items-center justify-between gap-3">
+        <span className="label-mono">
+          {n} · {label}
+        </span>
+        <span className="label-mono text-muted">Stated claim {n}</span>
+      </div>
       {children}
     </div>
   );
 }
 
-/** Two small dots showing which of the two cards you're on. */
-function Progress({ step }: { step: 1 | 2 }) {
-  return (
-    <div className="flex items-center gap-2" aria-hidden>
-      {[1, 2].map((n) => (
-        <span
-          key={n}
-          className={`h-1.5 w-6 rounded-pill ${n <= step ? "bg-accent" : "bg-sand-300"}`}
-        />
-      ))}
-    </div>
-  );
-}
-
 /**
- * The Facts form (layer 01) - a structured, no-AI form, shown as two light
- * cards: the essentials first, then an optional "a bit more". On save it
- * persists the data and regenerates facts-layer claims. Used standalone and in
- * first-run. Inputs are sized to their content (segmented year, chip lists) so
- * it reads as a profile card rather than a long column of rows.
+ * The Facts form (Layer 01) - a single page of nine numbered, no-AI fields, each
+ * one Stated claim. Chip fields take one item at a time and never split on a
+ * comma. On save it persists the data and regenerates the facts-layer claims
+ * (the form is the editor; claims are the queryable representation).
  */
-export function FactsForm({
-  onDone,
-  firstRun,
-}: {
-  onDone?: () => void;
-  firstRun?: boolean;
-}) {
+export function FactsForm({ onDone }: { onDone?: () => void }) {
   const store = useStore();
   const [data, setData] = useState<FactsData>({});
   const [loaded, setLoaded] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [step, setStep] = useState<1 | 2>(1);
 
   useEffect(() => {
     loadFacts(store).then((d) => {
@@ -84,142 +124,62 @@ export function FactsForm({
     onDone?.();
   }
 
-  async function skip() {
-    await markFactsStepDone(store);
-    onDone?.();
-  }
-
   if (!loaded) return <span className="label-mono">Loading…</span>;
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex items-center justify-between">
-        <span className="label-mono text-accent">
-          {step === 1 ? "Essentials" : "A bit more — optional"}
-        </span>
-        <Progress step={step} />
-      </div>
-
-      {step === 1 ? (
-        <div className="flex flex-col gap-5">
-          <p className="m-0 max-w-[56ch] text-[15px] leading-[1.55] text-muted">
-            A few stable facts, as much or as little as you like. No AI touches
-            this; it stays on your device and is only read when you export.
-            Every field is optional.
-          </p>
-
-          <div className="flex flex-wrap gap-x-8 gap-y-5">
-            <Labeled label="Name">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {DISPLAY.map((f, i) => (
+          <Card key={f.key} n={i + 1} label={f.label} full={f.full}>
+            {f.kind === "text" && (
               <input
-                className={`${FIELD} w-[220px]`}
-                placeholder="What you go by"
-                value={data.name ?? ""}
-                onChange={(e) => set("name", e.target.value)}
+                className={`${FIELD} w-full`}
+                placeholder={f.placeholder}
+                value={data[f.key] ?? ""}
+                onChange={(e) => set(f.key, e.target.value)}
               />
-            </Labeled>
-            <Labeled label="Born">
-              <div className="flex items-center gap-2">
+            )}
+            {f.kind === "born" && (
+              <div className="flex items-center gap-2 flex-wrap">
                 <YearBoxes
                   value={born.year}
                   onChange={(y) => set("born", formatBorn(y, born.place))}
                 />
                 <input
-                  className={`${FIELD} w-[150px]`}
+                  className={`${FIELD} flex-1 min-w-[130px]`}
                   placeholder="where"
                   value={born.place}
-                  onChange={(e) => set("born", formatBorn(born.year, e.target.value))}
+                  onChange={(e) =>
+                    set("born", formatBorn(born.year, e.target.value))
+                  }
                 />
               </div>
-            </Labeled>
-          </div>
-
-          <Labeled label="Languages">
-            <ChipsInput
-              value={data.languages ?? ""}
-              onChange={(v) => set("languages", v)}
-              placeholder="English, Spanish…"
-            />
-          </Labeled>
-
-          <Labeled label="Work / role">
-            <input
-              className={`${FIELD} w-full max-w-[360px]`}
-              placeholder="What you do"
-              value={data.work ?? ""}
-              onChange={(e) => set("work", e.target.value)}
-            />
-          </Labeled>
-
-          <div className="flex flex-wrap items-center gap-3 pt-1">
-            <Button onClick={() => setStep(2)}>Continue</Button>
-            {firstRun ? (
-              <Button variant="ghost" onClick={skip}>
-                Skip for now
-              </Button>
-            ) : (
-              <Button variant="ghost" onClick={save} disabled={busy}>
-                {busy ? "Saving…" : "Save"}
-              </Button>
             )}
-          </div>
-        </div>
-      ) : (
-        <div className="flex flex-col gap-5">
-          <div className="flex flex-wrap gap-x-8 gap-y-5">
-            <Labeled label="Height">
-              <input
-                className={`${FIELD} w-[130px]`}
-                placeholder="178 cm"
-                value={data.height ?? ""}
-                onChange={(e) => set("height", e.target.value)}
+            {f.kind === "chips" && (
+              <ChipsInput
+                value={data[f.key] ?? ""}
+                onChange={(v) => set(f.key, v)}
+                placeholder={f.placeholder}
               />
-            </Labeled>
-            <Labeled label="Household">
-              <input
-                className={`${FIELD} w-full max-w-[320px]`}
-                placeholder="partner, kids, pets"
-                value={data.household ?? ""}
-                onChange={(e) => set("household", e.target.value)}
+            )}
+            {f.kind === "textarea" && (
+              <textarea
+                rows={2}
+                className={`${FIELD} w-full leading-[1.5] resize-none`}
+                placeholder={f.placeholder}
+                value={data[f.key] ?? ""}
+                onChange={(e) => set(f.key, e.target.value)}
               />
-            </Labeled>
-          </div>
+            )}
+          </Card>
+        ))}
+      </div>
 
-          <Labeled label="Places you've lived">
-            <ChipsInput
-              value={data.places ?? ""}
-              onChange={(v) => set("places", v)}
-              placeholder="Cities or countries"
-            />
-          </Labeled>
-
-          <Labeled label="A typical day">
-            <textarea
-              rows={2}
-              className={`${FIELD} w-full leading-[1.5] resize-none`}
-              placeholder="Your usual rhythm"
-              value={data.routine ?? ""}
-              onChange={(e) => set("routine", e.target.value)}
-            />
-          </Labeled>
-
-          <Labeled label="Tastes">
-            <ChipsInput
-              value={data.tastes ?? ""}
-              onChange={(v) => set("tastes", v)}
-              placeholder="Things you love and can't stand"
-            />
-          </Labeled>
-
-          <div className="flex flex-wrap items-center gap-3 pt-1">
-            <Button onClick={save} disabled={busy}>
-              {busy ? "Saving…" : firstRun ? "Save and continue" : "Save facts"}
-            </Button>
-            <Button variant="ghost" onClick={() => setStep(1)}>
-              ← Back
-            </Button>
-          </div>
-        </div>
-      )}
+      <div className="flex items-center gap-3 pt-1">
+        <Button onClick={save} disabled={busy}>
+          {busy ? "Saving…" : "Save facts"}
+        </Button>
+      </div>
     </div>
   );
 }

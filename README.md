@@ -84,13 +84,13 @@ Prerequisites: **Node 20+** and **npm**.
 
 ```bash
 npm install
-npm run dev        # the app at http://localhost:5173/app
+npm run dev        # the app at http://localhost:5173/studio
 ```
 
-Build and preview the whole site (public pages at `/`, the app at `/app`):
+Build and preview the whole site (public pages at `/`, the app at `/studio`):
 
 ```bash
-npm run build      # typecheck, build the SPA into dist/app, copy the site into dist/
+npm run build      # typecheck, build the SPA into dist/studio, copy the site into dist/
 npm run serve      # serve dist/ at http://localhost:4318
 ```
 

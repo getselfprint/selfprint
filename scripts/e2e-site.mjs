@@ -1,4 +1,4 @@
-// Screenshot the public site and confirm the SPA boots under /app.
+// Screenshot the public site and confirm the SPA boots under /studio.
 import { chromium } from "playwright";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -23,8 +23,8 @@ const run = async () => {
   await page.getByText("No warranty, use at your own risk").waitFor();
   await page.screenshot({ path: join(OUT, "23-site-terms.png"), fullPage: true });
 
-  // The real proof: the SPA JS executes under /app and renders the first screen.
-  await page.goto(`${BASE}/app`);
+  // The real proof: the SPA JS executes under /studio and renders the first screen.
+  await page.goto(`${BASE}/studio`);
   await page.getByText("Create your passphrase").waitFor();
   await page.screenshot({ path: join(OUT, "22-app-boots-at-app.png"), fullPage: true });
 

@@ -1,6 +1,6 @@
 // Local static server for the combined build: the public site at "/" and the
-// SPA under "/app". Mirrors what a static host (or rewrite rules) should do in
-// production. See docs/public-site.md. Dev uses `vite` instead.
+// SPA under "/studio". Mirrors what a static host (or rewrite rules) should do
+// in production. See docs/public-site.md. Dev uses `vite` instead.
 //
 //   node scripts/serve.mjs [port]
 //
@@ -43,9 +43,9 @@ function resolve(urlPath) {
   const candidate = join(dist, urlPath);
   if (existsSync(candidate) && statSync(candidate).isFile()) return candidate;
 
-  // SPA history fallback: anything under /app with no matching file.
-  if (urlPath === "/app" || urlPath.startsWith("/app/")) {
-    return join(dist, "app", "index.html");
+  // SPA history fallback: anything under /studio with no matching file.
+  if (urlPath === "/studio" || urlPath.startsWith("/studio/")) {
+    return join(dist, "studio", "index.html");
   }
   return null;
 }
@@ -65,5 +65,5 @@ const server = createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Serving dist/ (site at / , app at /app) on http://localhost:${PORT}`);
+  console.log(`Serving dist/ (site at / , app at /studio) on http://localhost:${PORT}`);
 });

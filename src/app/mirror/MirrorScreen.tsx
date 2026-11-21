@@ -146,7 +146,7 @@ function Overview({ m, setView }: { m: M; setView: (v: View) => void }) {
             </div>
             <button
               type="button"
-              onClick={() => navigate("/app/interview")}
+              onClick={() => navigate("/interview")}
               className="mt-1 self-start inline-flex items-center min-h-[44px] px-5 rounded-pill bg-ink text-ground text-sm font-medium"
             >
               Explore this in an interview

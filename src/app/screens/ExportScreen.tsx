@@ -22,7 +22,12 @@ function download(filename: string, data: BlobPart, mime: string) {
   URL.revokeObjectURL(url);
 }
 
-export function ExportScreen() {
+/**
+ * The export UI itself (format cards + preview + encrypted backup), with no page
+ * chrome - rendered both as the final section of the Profile and at the
+ * standalone /app/export route (reached from Settings "Back up").
+ */
+export function ExportPanel() {
   const { store, claims, answers } = useProfile();
   const { nameList } = useConfig();
   const [format, setFormat] = useState<Format>("persona");
@@ -66,8 +71,7 @@ export function ExportScreen() {
   }
 
   return (
-    <main className={`flex-1 py-[var(--pad-y)] px-[var(--pad-x)] ${DOTS}`}>
-      <div className="w-full flex flex-wrap gap-x-12 gap-y-8 items-start">
+    <div className="w-full flex flex-wrap gap-x-12 gap-y-8 items-start">
         <section className="flex-[1_1_320px] max-w-[440px] flex flex-col gap-5">
           <div className="flex flex-col gap-2">
             <span className="label-mono">Export</span>
@@ -167,7 +171,15 @@ export function ExportScreen() {
             </div>
           )}
         </section>
-      </div>
+    </div>
+  );
+}
+
+/** Standalone export route (/app/export), reached from Settings "Back up". */
+export function ExportScreen() {
+  return (
+    <main className={`flex-1 py-[var(--pad-y)] px-[var(--pad-x)] ${DOTS}`}>
+      <ExportPanel />
     </main>
   );
 }

@@ -38,4 +38,6 @@ export const SETTINGS_KEYS = {
   mirrorSelf: "mirrorSelf",
   /** Autosaved in-progress interview session, so it survives navigation. */
   interviewDraft: "interviewDraft",
+  /** True while the user is browsing the pre-seeded demo persona. */
+  demoMode: "demoMode",
 } as const;

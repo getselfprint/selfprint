@@ -5,6 +5,7 @@ import { LAYER_BY_ID, LAYERS } from "@/engine/layers";
 import { editClaim, makeUserClaim } from "@/engine/confidence";
 import { useProfile } from "@/app/data/hooks";
 import { ConfidenceTag } from "@/app/components/ConfidenceTag";
+import { ExportPanel } from "./ExportScreen";
 import { DOTS } from "./shared";
 
 const CONFIDENCES: Confidence[] = ["stated", "inferred", "tested"];
@@ -13,9 +14,12 @@ export function ProfileScreen() {
   const { store, claims, answers, contradictions, loading, reload } =
     useProfile();
   const [params, setParams] = useSearchParams();
+  const viewParam = params.get("layer");
+  // Export is the final section of the Profile (spec), shown as the last item in
+  // the layer rail rather than a separate nav item.
+  const isExport = viewParam === "export";
   const selected: LayerId =
-    (LAYERS.find((l) => l.id === params.get("layer"))?.id as LayerId) ??
-    "stories";
+    (LAYERS.find((l) => l.id === viewParam)?.id as LayerId) ?? "facts";
   const [filter, setFilter] = useState<Set<Confidence>>(
     () => new Set(CONFIDENCES),
   );
@@ -86,7 +90,7 @@ export function ProfileScreen() {
               type="button"
               onClick={() => selectLayer(l.id)}
               className={`flex items-baseline gap-2.5 text-left px-3 py-2 rounded-card ${
-                l.id === selected
+                l.id === selected && !isExport
                   ? "bg-sand-100 text-ink font-medium"
                   : "text-muted hover:text-ink"
               }`}
@@ -95,10 +99,30 @@ export function ProfileScreen() {
               <span className="text-sm">{l.name}</span>
             </button>
           ))}
+          <span className="my-2 h-px bg-sand-200" aria-hidden="true" />
+          <button
+            type="button"
+            onClick={() => {
+              setParams({ layer: "export" });
+              setAdding(false);
+            }}
+            className={`flex items-baseline gap-2.5 text-left px-3 py-2 rounded-card ${
+              isExport
+                ? "bg-sand-100 text-ink font-medium"
+                : "text-muted hover:text-ink"
+            }`}
+          >
+            <span className="font-mono text-xs">↓</span>
+            <span className="text-sm">Export</span>
+          </button>
         </nav>
 
-        {/* Right: the selected layer */}
+        {/* Right: the selected layer, or the Export section */}
         <div className="flex-1 min-w-[320px] flex flex-col gap-5">
+          {isExport ? (
+            <ExportPanel />
+          ) : (
+          <>
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div className="flex flex-col gap-1">
               <span className="label-mono">Layer {def?.num}</span>
@@ -114,7 +138,7 @@ export function ProfileScreen() {
             <div className="flex items-center gap-4">
               {selected === "facts" && (
                 <Link
-                  to="/app/facts"
+                  to="/facts"
                   className="inline-flex items-center min-h-[40px] px-4 rounded-pill border border-sand-300 bg-ground text-ink no-underline text-sm font-medium hover:bg-sand-100"
                 >
                   Edit the facts form
@@ -178,6 +202,8 @@ export function ProfileScreen() {
               )}
             </div>
           )}
+          </>
+          )}
         </div>
       </div>
     </main>
@@ -204,7 +230,7 @@ function EmptyLayer({
       <div className="flex flex-wrap gap-3">
         {isFacts ? (
           <Link
-            to="/app/facts"
+            to="/facts"
             className="inline-flex items-center min-h-[44px] px-5 rounded-pill bg-ink text-ground no-underline text-sm font-medium"
           >
             Fill the facts form
@@ -212,7 +238,7 @@ function EmptyLayer({
         ) : (
           def.hasSeedQuestions && (
             <Link
-              to={`/app/interview?layer=${layer}`}
+              to={`/interview?layer=${layer}`}
               className="inline-flex items-center min-h-[44px] px-5 rounded-pill bg-ink text-ground no-underline text-sm font-medium"
             >
               Start the {def.name.toLowerCase()} interview

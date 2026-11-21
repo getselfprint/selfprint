@@ -7,7 +7,7 @@ const run = async () => {
   const b = await chromium.launch({ channel: "chrome", headless: true });
   const page = await b.newPage({ viewport: { width: 760, height: 1000 } });
   page.setDefaultTimeout(15000);
-  await page.goto(`${BASE}/app/`);
+  await page.goto(`${BASE}/studio/`);
   await page.getByText("Create your passphrase").waitFor();
   await page.getByLabel("Passphrase", { exact: true }).fill(PASS);
   await page.getByLabel("Confirm passphrase").fill(PASS);

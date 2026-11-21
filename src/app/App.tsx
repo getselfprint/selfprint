@@ -8,18 +8,20 @@ import { ExportScreen } from "./screens/ExportScreen";
 import { FactsScreen } from "./facts/FactsScreen";
 import { TestScreen } from "./test/TestScreen";
 import { MirrorScreen } from "./mirror/MirrorScreen";
+import { ChooseModelScreen } from "./model/ChooseModelScreen";
 
 /**
- * The client-side app lives under /app (spec §17 - the public marketing/legal
- * site is a separate pre-rendered build mounted at /). For now / redirects to
- * the app; the public site arrives in Milestone 1.
+ * The client-side app is mounted under the Vite base (e.g. /studio - spec §17,
+ * the public marketing/legal site is a separate pre-rendered build mounted at
+ * /). Routes are written base-relative; the router's basename (main.tsx) adds
+ * the prefix, so the base name lives only in vite.config.ts.
  */
 export function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/app" replace />} />
-      <Route path="/app" element={<AppLayout />}>
+      <Route path="/" element={<AppLayout />}>
         <Route index element={<MapScreen />} />
+        <Route path="model" element={<ChooseModelScreen />} />
         <Route path="facts" element={<FactsScreen />} />
         <Route path="interview" element={<InterviewScreen />} />
         <Route path="profile" element={<ProfileScreen />} />
@@ -28,7 +30,7 @@ export function App() {
         <Route path="export" element={<ExportScreen />} />
         <Route path="settings" element={<SettingsScreen />} />
       </Route>
-      <Route path="*" element={<Navigate to="/app" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

@@ -51,8 +51,10 @@ export function YearBoxes({
 }
 
 /**
- * A chip list backed by a comma-separated string. Type a word and press Enter
- * (or comma) to add a pill; click a pill's ✕ to remove it.
+ * A chip list backed by a newline-delimited string. One item at a time: type a
+ * value and press Enter or click "+ Add" (a comma is kept as part of the value,
+ * never a silent split - "Portland, Oregon" is one chip). Click a pill's ✕ to
+ * remove it.
  */
 export function ChipsInput({
   value,
@@ -70,11 +72,17 @@ export function ChipsInput({
     .map((s) => s.trim())
     .filter(Boolean);
 
-  function commit() {
+  // `refocus` keeps the cursor in the box after Enter / "+ Add" so you can type
+  // the next item. On blur we must NOT refocus - that would trap focus in the
+  // chip field and stop you ever clicking into another input.
+  function commit(refocus = false) {
     const t = draftRef.current?.value.trim() ?? "";
     if (t && !items.some((x) => x.toLowerCase() === t.toLowerCase()))
       onChange([...items, t].join("\n"));
-    if (draftRef.current) draftRef.current.value = "";
+    if (draftRef.current) {
+      draftRef.current.value = "";
+      if (refocus) draftRef.current.focus();
+    }
   }
 
   function remove(i: number) {
@@ -82,35 +90,48 @@ export function ChipsInput({
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      {items.map((it, i) => (
-        <span
-          key={it}
-          className="inline-flex items-center gap-2 border border-sand-300 bg-sand-50 rounded-pill pl-3.5 pr-2.5 py-2 text-sm"
+    <div className="flex flex-col gap-3">
+      {items.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2">
+          {items.map((it, i) => (
+            <span
+              key={it}
+              className="inline-flex items-center gap-2 border border-sand-300 bg-sand-50 rounded-pill pl-3.5 pr-2.5 py-2 text-sm"
+            >
+              {it}
+              <button
+                type="button"
+                onClick={() => remove(i)}
+                aria-label={`Remove ${it}`}
+                className="text-muted text-xs leading-none hover:text-ink"
+              >
+                ✕
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+      <div className="flex items-center gap-2">
+        <input
+          ref={draftRef}
+          placeholder={placeholder ?? "Add one at a time…"}
+          className="flex-1 min-w-0 border border-sand-300 rounded-[10px] px-3.5 py-2.5 text-base bg-ground text-ink placeholder:text-muted focus:border-accent focus:outline-none"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              commit(true);
+            }
+          }}
+          onBlur={() => commit(false)}
+        />
+        <button
+          type="button"
+          onClick={() => commit(true)}
+          className="shrink-0 inline-flex items-center gap-1.5 min-h-[44px] px-4 rounded-pill border border-sand-300 bg-ground text-ink text-sm font-medium hover:bg-sand-100"
         >
-          {it}
-          <button
-            type="button"
-            onClick={() => remove(i)}
-            aria-label={`Remove ${it}`}
-            className="text-muted text-xs leading-none hover:text-ink"
-          >
-            ✕
-          </button>
-        </span>
-      ))}
-      <input
-        ref={draftRef}
-        placeholder={items.length ? "add another" : placeholder}
-        className="min-w-[8rem] flex-1 border border-dashed border-sand-300 rounded-pill px-3.5 py-2.5 text-base bg-ground text-ink placeholder:text-muted focus:border-accent focus:outline-none"
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            commit();
-          }
-        }}
-        onBlur={commit}
-      />
+          + Add
+        </button>
+      </div>
     </div>
   );
 }

@@ -12,15 +12,15 @@ Prerequisites: **Node 20+** and **npm**.
 git clone https://github.com/getselfprint/selfprint
 cd selfprint
 npm install
-npm run dev          # app at http://localhost:5173/app
+npm run dev          # app at http://localhost:5173/studio
 ```
 
 | Script | What it does |
 |--------|--------------|
-| `npm run dev` | Vite dev server (app only, served under `/app`) |
+| `npm run dev` | Vite dev server (app only, served under `/studio`) |
 | `npm run typecheck` | `tsc` in `--noEmit` mode |
-| `npm run build` | typecheck, build the SPA into `dist/app`, copy `site/` into `dist/` |
-| `npm run serve` | serve the combined build (`site` at `/`, app at `/app`) |
+| `npm run build` | typecheck, build the SPA into `dist/studio`, copy `site/` into `dist/` |
+| `npm run serve` | serve the combined build (`site` at `/`, app at `/studio`) |
 | `npm run preview` | Vite preview of the app only |
 
 > **Native-binary note.** The repo pins Rollup to `@rollup/wasm-node` via a

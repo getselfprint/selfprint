@@ -17,7 +17,7 @@ Local-first, installable PWA. No backend, no account, no telemetry (spec §10, �
 
 | Path | Role |
 |------|------|
-| `src/app` | Routes and screens. App is mounted under `/app` and is `noindex` (§17). |
+| `src/app` | Routes and screens. App is mounted under `/studio` and is `noindex` (§17). |
 | `src/engine` | Layer definitions, coverage, session flow, confidence state machine. Deterministic, no AI (§5). |
 | `src/llm` | Provider interface + adapters. `createProvider()` is the single factory. |
 | `src/store` | Encrypted IndexedDB layer (interface defined; implementation = Milestone 1). |

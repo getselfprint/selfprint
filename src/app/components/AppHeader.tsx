@@ -1,24 +1,24 @@
 import { NavLink } from "react-router-dom";
 import { useVault } from "@/app/vault/VaultContext";
 
-const SECTIONS = [
-  { to: "/app", label: "Map", end: true },
-  { to: "/app/interview", label: "Interview", end: false },
-  { to: "/app/profile", label: "Profile", end: false },
-  { to: "/app/mirror", label: "Mirror", end: false },
-  { to: "/app/test", label: "Test", end: false },
-  { to: "/app/export", label: "Export", end: false },
-  { to: "/app/settings", label: "Settings", end: false },
+// One flat menu, shown on every screen (spec: one navigation system). Test and
+// Mirror live in Settings -> Diagnostics; Export is the final section of
+// Profile - neither is a top-level peer.
+const NAV: { to: string; label: string; end: boolean }[] = [
+  { to: "/", label: "Map", end: true },
+  { to: "/interview", label: "Interview", end: false },
+  { to: "/profile", label: "Profile", end: false },
+  { to: "/settings", label: "Settings", end: false },
 ];
 
 const PILL_BASE =
   "inline-flex items-center shrink-0 whitespace-nowrap min-h-tap px-3.5 rounded-pill no-underline text-sm font-medium";
 
-/** App header - logo, section nav, and (when set) a Lock button. */
+/** App header - logo, the one flat menu, and the on-device assurance. */
 export function AppHeader() {
   const { lock, hasPassphrase } = useVault();
   return (
-    <header className="flex flex-wrap items-center justify-between gap-y-3 gap-x-8 py-[18px] px-[var(--pad-x)] border-b border-sand-200">
+    <header className="flex flex-wrap items-center justify-between gap-y-3 gap-x-8 min-h-[77px] py-3 px-[var(--pad-x)] border-b border-sand-200">
       <a
         href="/"
         title="Selfprint home"
@@ -41,13 +41,13 @@ export function AppHeader() {
       </a>
 
       {/* On phones the nav drops to its own full-width row and scrolls
-          horizontally (7 pills won't fit); on sm+ it wraps inline. */}
+          horizontally; on sm+ it sits inline. */}
       <nav
         aria-label="Sections"
         className="order-last w-full overflow-x-auto sm:order-none sm:w-auto sm:overflow-visible -mx-[var(--pad-x)] px-[var(--pad-x)] sm:mx-0 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
-        <div className="flex w-max flex-nowrap gap-1 sm:w-auto sm:flex-wrap">
-          {SECTIONS.map((s) => (
+        <div className="flex w-max flex-nowrap items-center gap-1 sm:w-auto sm:flex-wrap">
+          {NAV.map((s) => (
             <NavLink
               key={s.to}
               to={s.to}
@@ -64,13 +64,8 @@ export function AppHeader() {
         </div>
       </nav>
 
-      {hasPassphrase && (
-        <button
-          type="button"
-          onClick={() => void lock()}
-          title="Lock now - require the passphrase to reopen"
-          className="inline-flex items-center gap-2 min-h-tap font-mono text-xs text-muted hover:text-ink"
-        >
+      <div className="flex items-center gap-4">
+        <span className="inline-flex items-center gap-2 font-mono text-xs text-muted">
           <svg
             aria-hidden="true"
             width="14"
@@ -85,9 +80,19 @@ export function AppHeader() {
             <rect x="4" y="11" width="16" height="10" rx="2" />
             <path d="M8 11V7a4 4 0 0 1 8 0v4" />
           </svg>
-          <span>Lock</span>
-        </button>
-      )}
+          <span>On this device</span>
+        </span>
+        {hasPassphrase && (
+          <button
+            type="button"
+            onClick={() => void lock()}
+            title="Lock now - require the passphrase to reopen"
+            className="inline-flex items-center min-h-tap font-mono text-xs text-muted hover:text-ink"
+          >
+            Lock
+          </button>
+        )}
+      </div>
     </header>
   );
 }

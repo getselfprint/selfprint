@@ -15,7 +15,7 @@ const run = async () => {
   };
 
   // --- First run: passphrase ---
-  await page.goto(`${BASE}/app/`);
+  await page.goto(`${BASE}/studio/`);
   await page.getByText("Create your passphrase").waitFor();
   await page.getByLabel("Passphrase", { exact: true }).fill(PASS);
   await page.getByLabel("Confirm passphrase").fill(PASS);

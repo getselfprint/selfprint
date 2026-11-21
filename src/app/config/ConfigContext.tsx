@@ -7,6 +7,7 @@ import {
   useState,
 } from "react";
 import { SETTINGS_KEYS } from "@/store";
+import { clearDemo, seedDemo } from "@/app/dev/seedDemo";
 import { useStore } from "@/app/vault/VaultContext";
 
 /**
@@ -39,6 +40,10 @@ interface ConfigValue {
   /** Names to redact from exports (spec §8, §12). */
   nameList: string[];
   saveNameList(names: string[]): Promise<void>;
+  /** True while browsing the pre-seeded demo persona. */
+  demoMode: boolean;
+  enterDemo(): Promise<void>;
+  exitDemo(): Promise<void>;
 }
 
 const ConfigCtx = createContext<ConfigValue | null>(null);
@@ -48,13 +53,15 @@ export function ConfigProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [setup, setSetup] = useState<InterviewSetup | null>(null);
   const [nameList, setNameList] = useState<string[]>([]);
+  const [demoMode, setDemoMode] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     Promise.all([
       store.settings.get<InterviewSetup>(SETTINGS_KEYS.providerConfig),
       store.settings.get<string[]>(SETTINGS_KEYS.nameList),
-    ]).then(([s, n]) => {
+      store.settings.get<boolean>(SETTINGS_KEYS.demoMode),
+    ]).then(([s, n, d]) => {
       if (cancelled) return;
       // Legacy vaults may have a removed mode saved ("guided", "copy-paste");
       // treat those as unset so the user picks a current (live-model) mode.
@@ -62,11 +69,25 @@ export function ConfigProvider({ children }: { children: ReactNode }) {
       const valid = s && !removed.includes(s.mode as string) ? s : null;
       setSetup(valid);
       setNameList(n ?? []);
+      setDemoMode(!!d);
       setLoading(false);
     });
     return () => {
       cancelled = true;
     };
+  }, [store]);
+
+  const enterDemo = useCallback(async () => {
+    await seedDemo(store);
+    setDemoMode(true);
+  }, [store]);
+
+  const exitDemo = useCallback(async () => {
+    await clearDemo(store);
+    // A full reload re-reads the cleared vault so every screen starts fresh,
+    // landing on the model picker where a real run begins. BASE_URL carries the
+    // app's mount path (e.g. "/studio/"), so this survives a base rename.
+    window.location.href = `${import.meta.env.BASE_URL}model`;
   }, [store]);
 
   const saveSetup = useCallback(
@@ -87,7 +108,16 @@ export function ConfigProvider({ children }: { children: ReactNode }) {
 
   return (
     <ConfigCtx.Provider
-      value={{ loading, setup, saveSetup, nameList, saveNameList }}
+      value={{
+        loading,
+        setup,
+        saveSetup,
+        nameList,
+        saveNameList,
+        demoMode,
+        enterDemo,
+        exitDemo,
+      }}
     >
       {children}
     </ConfigCtx.Provider>

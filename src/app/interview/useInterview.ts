@@ -90,7 +90,7 @@ interface Snapshot {
 export function useInterview() {
   const store = useStore();
   const { setup } = useConfig();
-  const mode = setup?.mode ?? "anthropic";
+  const mode = setup?.mode ?? "webllm";
   const provider = setup ? setupToProvider(setup) : null;
 
   // A ?layer= deep-link (from the Map) targets a specific interviewable layer.
@@ -186,7 +186,7 @@ export function useInterview() {
         return;
       }
 
-      const coverage = computeCoverage(claims);
+      const coverage = computeCoverage(claims, answers);
       const layer = want ?? pickInterviewLayer((l) => coverage[l].status);
       if (!layer) {
         update({ phase: "none", allClaims: claims });

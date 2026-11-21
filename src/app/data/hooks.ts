@@ -1,6 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
-import type { Answer, Claim, Contradiction, TestRun } from "@/types/model";
+import type { Answer, Claim, Contradiction, LayerId, TestRun } from "@/types/model";
+import { SETTINGS_KEYS } from "@/store";
 import { useStore } from "@/app/vault/VaultContext";
+
+/** The bits of the autosaved interview draft the Map needs to show "Resume". */
+export interface InterviewDraftPeek {
+  layer: LayerId;
+  questionsAsked: number;
+  questionText: string;
+}
 
 /** Load all test runs (for the Map match score). */
 export function useTests() {
@@ -32,6 +40,33 @@ export function useClaims() {
   }, [reload]);
 
   return { claims, loading, reload };
+}
+
+/** Load everything the Map needs: claims, answers, and the resumable draft. */
+export function useMapState() {
+  const store = useStore();
+  const [claims, setClaims] = useState<Claim[]>([]);
+  const [answers, setAnswers] = useState<Answer[]>([]);
+  const [draft, setDraft] = useState<InterviewDraftPeek | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const reload = useCallback(async () => {
+    const [c, a, d] = await Promise.all([
+      store.claims.all(),
+      store.answers.all(),
+      store.settings.get<InterviewDraftPeek>(SETTINGS_KEYS.interviewDraft),
+    ]);
+    setClaims(c);
+    setAnswers(a);
+    setDraft(d ?? null);
+    setLoading(false);
+  }, [store]);
+
+  useEffect(() => {
+    void reload();
+  }, [reload]);
+
+  return { claims, answers, draft, loading, reload };
 }
 
 /** Load claims, answers, and contradictions together (Profile / Export). */

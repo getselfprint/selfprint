@@ -1,5 +1,5 @@
 // Copy the static public site (/site) into dist/ root, alongside the SPA which
-// vite builds into dist/app. Run after `vite build`. See docs/public-site.md.
+// vite builds into dist/studio. Run after `vite build`. See docs/public-site.md.
 import {
   copyFileSync,
   mkdirSync,

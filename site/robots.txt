@@ -1,27 +1,27 @@
 # Selfprint - public site is indexable; the app carries no public content.
 User-agent: *
 Allow: /
-Disallow: /app
+Disallow: /studio
 
 # AI crawlers explicitly allowed on the public pages (decide per launch).
 User-agent: GPTBot
 Allow: /
-Disallow: /app
+Disallow: /studio
 
 User-agent: ClaudeBot
 Allow: /
-Disallow: /app
+Disallow: /studio
 
 User-agent: Claude-Web
 Allow: /
-Disallow: /app
+Disallow: /studio
 
 User-agent: PerplexityBot
 Allow: /
-Disallow: /app
+Disallow: /studio
 
 User-agent: Google-Extended
 Allow: /
-Disallow: /app
+Disallow: /studio
 
 Sitemap: https://selfprint.org/sitemap.xml

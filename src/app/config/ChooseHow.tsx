@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useRef, useState } from "react";
 import {
   isWebGPUAvailable,
   preloadWebLLM,
@@ -75,7 +75,9 @@ export function ChooseHow({
 }) {
   const { setup } = useConfig();
   const current = entryOf(setup);
-  const [selected, setSelected] = useState<EntryId>(current ?? "anthropic");
+  // The free in-browser model is the default - no key, nothing preselected for
+  // a paid account.
+  const [selected, setSelected] = useState<EntryId>(current ?? "webllm");
 
   return (
     <div className="flex flex-col gap-5">
@@ -528,6 +530,18 @@ function LocalDetail({ onDone }: { onDone?: () => void }) {
 
 // ---- Model in this browser (webllm) -----------------------------------------
 
+/** WebLLM's progress text carries "… 227MB fetched …"; pull the MB figure out. */
+function fetchedMB(text: string): string | null {
+  const m = text.match(/([\d.]+)\s*MB/i);
+  return m ? m[1] : null;
+}
+
+function etaLabel(sec: number | null): string {
+  if (sec === null || !Number.isFinite(sec)) return "estimating…";
+  if (sec < 60) return `~${Math.max(1, Math.round(sec))}s left`;
+  return `~${Math.round(sec / 60)} min left`;
+}
+
 function WebLLMDetail({ onDone }: { onDone?: () => void }) {
   const { setup, saveSetup } = useConfig();
   const supported = isWebGPUAvailable();
@@ -542,10 +556,12 @@ function WebLLMDetail({ onDone }: { onDone?: () => void }) {
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(current);
   const [error, setError] = useState<string | null>(null);
+  const startRef = useRef(0);
 
   async function download() {
     setBusy(true);
     setError(null);
+    startRef.current = performance.now();
     try {
       await preloadWebLLM(model, (info) => setProgress(info));
       await saveSetup({ mode: "webllm", model });
@@ -612,19 +628,31 @@ function WebLLMDetail({ onDone }: { onDone?: () => void }) {
           follow-ups.
         </span>
       </label>
-      {busy && progress && (
-        <div className="flex flex-col gap-1">
-          <div className="w-full h-1 rounded-[2px] bg-[var(--track)] overflow-hidden">
-            <div
-              className="h-1 bg-accent"
-              style={{ width: `${Math.round(progress.progress * 100)}%` }}
-            />
-          </div>
-          <span className="text-xs text-muted">
-            {Math.round(progress.progress * 100)}% · {progress.text}
-          </span>
-        </div>
-      )}
+      {busy &&
+        progress &&
+        (() => {
+          const p = progress.progress;
+          const pct = Math.round(p * 100);
+          const mb = fetchedMB(progress.text);
+          const elapsed = (performance.now() - startRef.current) / 1000;
+          const eta = p > 0.02 && p < 1 ? (elapsed * (1 - p)) / p : null;
+          return (
+            <div className="flex flex-col gap-1.5">
+              <div className="w-full h-1.5 rounded-pill bg-[var(--track)] overflow-hidden">
+                <div
+                  className="h-1.5 bg-accent rounded-pill"
+                  style={{ width: `${pct}%` }}
+                />
+              </div>
+              <div className="flex justify-between gap-3 font-mono text-xs text-muted">
+                <span>
+                  {pct}%{mb ? ` · ${mb} MB` : ""}
+                </span>
+                <span>{p < 1 ? etaLabel(eta) : "finishing…"}</span>
+              </div>
+            </div>
+          );
+        })()}
       <div className="flex items-center gap-3 flex-wrap">
         <button
           type="button"
@@ -632,7 +660,7 @@ function WebLLMDetail({ onDone }: { onDone?: () => void }) {
           disabled={!supported || busy}
           className="inline-flex items-center min-h-[44px] px-5 rounded-pill bg-ink text-ground text-sm font-medium disabled:opacity-40"
         >
-          {busy ? "Downloading…" : "Download model"}
+          {busy ? "Downloading…" : error ? "Retry download" : "Download model"}
         </button>
         <span className="text-sm text-muted">
           {done ? "Ready. This is now your model." : "Not downloaded yet."}

@@ -1,14 +1,41 @@
 import { fileURLToPath, URL } from "node:url";
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
 
 // Selfprint is a local-first, installable PWA. No backend, no analytics.
-// The app is served under /app so the public marketing/legal site (plain HTML
-// in /site) can own "/". See docs/public-site.md and the build spec (§10, §17).
+// The app is served under BASE so the public marketing/legal site (plain HTML
+// in /site) can own "/". This is the SINGLE source of truth for that path -
+// the router basename and every in-app link derive from it (import.meta.env
+// .BASE_URL), so renaming the app URL only means editing this one line.
+// See docs/public-site.md and the build spec (§10, §17).
+const BASE = "/studio/";
+
+// Dev only: the dev server serves the SPA under BASE, so visiting the bare
+// origin ("/") otherwise shows Vite's "did you mean /studio/?" page. Redirect
+// "/" (and the base without a trailing slash) into the app so that never shows.
+function redirectRootToBase(): Plugin {
+  return {
+    name: "selfprint-redirect-root-to-base",
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        const path = (req.url ?? "/").split("?")[0];
+        if (path === "/" || path === BASE.replace(/\/$/, "")) {
+          res.statusCode = 302;
+          res.setHeader("Location", BASE);
+          res.end();
+          return;
+        }
+        next();
+      });
+    },
+  };
+}
+
 export default defineConfig({
-  base: "/app/",
+  base: BASE,
   plugins: [
+    redirectRootToBase(),
     react(),
     VitePWA({
       registerType: "autoUpdate",
@@ -23,8 +50,8 @@ export default defineConfig({
         theme_color: "#1E1A15",
         background_color: "#FFFFFF",
         display: "standalone",
-        start_url: "/app/",
-        scope: "/app/",
+        start_url: BASE,
+        scope: BASE,
         icons: [
           { src: "icon-192.png", sizes: "192x192", type: "image/png" },
           { src: "icon-512.png", sizes: "512x512", type: "image/png" },
@@ -51,9 +78,9 @@ export default defineConfig({
     },
   },
   build: {
-    // SPA builds under dist/app; the static site is copied into dist/ root
+    // SPA builds under dist/studio; the static site is copied into dist/ root
     // afterwards (scripts/build-site.mjs).
-    outDir: "dist/app",
+    outDir: "dist/studio",
     rollupOptions: {
       output: {
         // Give the on-demand WebLLM library a stable chunk name so the service

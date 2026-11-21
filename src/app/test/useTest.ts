@@ -21,7 +21,7 @@ export type TestPhase =
 export function useTest() {
   const store = useStore();
   const { setup } = useConfig();
-  const mode = setup?.mode ?? "anthropic";
+  const mode = setup?.mode ?? "webllm";
   const provider = setup ? setupToProvider(setup) : null;
 
   const claimsRef = useRef<Claim[]>([]);

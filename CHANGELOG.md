@@ -27,7 +27,7 @@ The project is pre-1.0; everything below has been built but not yet tagged.
   redaction name list, an OpenAI-compatible adapter (local servers / OpenRouter),
   and an in-browser WebGPU model option.
 - **Public site.** Pre-rendered landing, privacy, and terms pages in the app's
-  design language, served at `/` with the SPA scoped under `/app`; `robots.txt`,
+  design language, served at `/` with the SPA scoped under `/studio`; `robots.txt`,
   `sitemap.xml`, `llms.txt`, and structured data.
 - **Project infrastructure.** MIT license, contributor and security docs, and
   Playwright end-to-end walkthrough scripts.

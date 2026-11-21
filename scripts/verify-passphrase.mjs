@@ -15,7 +15,7 @@ const run = async () => {
   };
 
   // --- First run: straight into Facts, NO passphrase prompt ---
-  await page.goto(`${BASE}/app/`);
+  await page.goto(`${BASE}/studio/`);
   await page.getByText("Start with the basics").waitFor();
   if (await page.getByText("Create your passphrase").count())
     fail("first run still forces a passphrase");

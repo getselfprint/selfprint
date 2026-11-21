@@ -30,7 +30,7 @@ export function TestScreen() {
             Settings to use Test mode.
           </p>
           <Link
-            to="/app/settings"
+            to="/settings"
             className="self-start inline-flex items-center min-h-[44px] px-5 rounded-pill bg-ink text-ground no-underline text-sm font-medium"
           >
             Open settings
