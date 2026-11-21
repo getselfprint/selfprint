@@ -148,6 +148,14 @@ a:hover {
 .site-nav a:hover {
   color: var(--ink);
 }
+.site-nav .ext {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.site-nav .ext svg {
+  opacity: 0.7;
+}
 .site-nav .pill {
   display: inline-flex;
   align-items: center;
@@ -282,6 +290,7 @@ a:hover {
 .feature {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 8px 28px;
   padding: 24px 0;
   border-top: 1px solid var(--sand-200);
