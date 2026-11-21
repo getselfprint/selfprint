@@ -57,14 +57,20 @@ export function isVague(text: string): boolean {
 
 /**
  * The layer the interview should run next: the first interviewable layer
- * (one with a seed bank) that isn't complete. In Milestone 1 that's stories
- * then values. Returns null when all interviewable layers are complete.
+ * (one with a seed bank) that isn't complete. `hasQuestionsLeft`, when given,
+ * also skips layers whose question bank is exhausted - a layer you answered in
+ * full but that produced no claims is not "complete", yet it has nothing left
+ * to ask, so the next step must move past it instead of getting stuck on it.
+ * Returns null when every interviewable layer is complete or exhausted.
  */
 export function pickInterviewLayer(
   statusOf: (layer: LayerId) => CoverageStatus,
+  hasQuestionsLeft?: (layer: LayerId) => boolean,
 ): LayerId | null {
   for (const layer of INTERVIEWABLE_LAYERS) {
-    if (statusOf(layer) !== "complete") return layer;
+    if (statusOf(layer) === "complete") continue;
+    if (hasQuestionsLeft && !hasQuestionsLeft(layer)) continue;
+    return layer;
   }
   return null;
 }

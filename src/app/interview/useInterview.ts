@@ -158,10 +158,18 @@ export function useInterview() {
       ]);
       if (cancelled) return;
 
+      const coverage = computeCoverage(claims, answers);
       const want = targetRef.current;
       // Resume where the user left off - unless they deep-linked a different
-      // layer from the Map, in which case start that one fresh.
-      if (snap && isActive(snap.phase) && (!want || snap.layer === want)) {
+      // layer, or the draft's layer has already had its full run of questions
+      // (resuming that would just re-ask a finished layer).
+      if (
+        snap &&
+        isActive(snap.phase) &&
+        (!want || snap.layer === want) &&
+        coverage[snap.layer]?.status !== "complete" &&
+        (coverage[snap.layer]?.answered ?? 0) < TARGET_QUESTIONS
+      ) {
         sessionId.current = snap.sessionId;
         const byId = new Map(claims.map((c) => [c.id, c]));
         const sessionClaims = snap.sessionClaimIds
@@ -186,10 +194,20 @@ export function useInterview() {
         return;
       }
 
-      const coverage = computeCoverage(claims, answers);
-      const layer = want ?? pickInterviewLayer((l) => coverage[l].status);
+      const layer =
+        want ??
+        pickInterviewLayer(
+          (l) => coverage[l].status,
+          (l) => coverage[l].answered < TARGET_QUESTIONS,
+        );
       if (!layer) {
         update({ phase: "none", allClaims: claims });
+        return;
+      }
+      // A layer that's already had its full run of questions has nothing left
+      // to ask - don't restart it; the "none" state offers the next layer.
+      if (coverage[layer].answered >= TARGET_QUESTIONS) {
+        update({ phase: "none", layer, allClaims: claims });
         return;
       }
       const usedSeeds = new Set(
@@ -280,44 +298,41 @@ export function useInterview() {
 
   const finishTurn = useCallback(async () => {
     const s = ref.current;
-    if (s.turnAnswers.length === 0) {
-      nextQuestion();
-      return;
-    }
-    const input: DistillInput = {
-      layer: s.layer as LayerId,
-      question: s.seedText,
-      questionType: s.seedType,
-      answers: s.turnAnswers,
-      existingClaims: activeClaimsInLayer().map((c) => ({
-        id: c.id,
-        text: c.text,
-      })),
-    };
+    if (s.turnAnswers.length > 0) {
+      const input: DistillInput = {
+        layer: s.layer as LayerId,
+        question: s.seedText,
+        questionType: s.seedType,
+        answers: s.turnAnswers,
+        existingClaims: activeClaimsInLayer().map((c) => ({
+          id: c.id,
+          text: c.text,
+        })),
+      };
 
-    // Live model: distill this turn's answers into draft claims now.
-    update({ busy: true, error: null });
-    try {
-      const out = await distill(provider!, input);
-      const { drafts, contradictions } = toRecords(out);
-      for (const d of drafts) await store.claims.put(d);
-      for (const c of contradictions) await store.contradictions.put(c);
-      update({
-        busy: false,
-        allClaims: [...ref.current.allClaims, ...drafts],
-        sessionClaims: [...ref.current.sessionClaims, ...drafts],
-      });
-    } catch (err) {
-      update({
-        busy: false,
-        error:
-          err instanceof Error
-            ? err.message
-            : "The distiller call failed.",
-      });
+      // Live model: distill this turn's answers into draft claims now.
+      update({ busy: true, error: null });
+      try {
+        const out = await distill(provider!, input);
+        const { drafts, contradictions } = toRecords(out);
+        for (const d of drafts) await store.claims.put(d);
+        for (const c of contradictions) await store.contradictions.put(c);
+        update({
+          allClaims: [...ref.current.allClaims, ...drafts],
+          sessionClaims: [...ref.current.sessionClaims, ...drafts],
+        });
+      } catch (err) {
+        update({
+          error:
+            err instanceof Error ? err.message : "The distiller call failed.",
+        });
+      }
     }
+    // Only now is the turn done: advance the counter and move on (nextQuestion
+    // clears the answer box). The step held put while the model worked.
+    update({ questionsAsked: ref.current.questionsAsked + 1, busy: false });
     nextQuestion();
-  }, [mode, provider, store, update, nextQuestion, activeClaimsInLayer]);
+  }, [provider, store, update, nextQuestion, activeClaimsInLayer]);
 
   const submit = useCallback(
     async (opts?: { keepPrivate?: boolean }) => {
@@ -365,12 +380,15 @@ export function useInterview() {
         return;
       }
 
+      // Keep the answer text and the step in place while the model works; the
+      // counter advances only after the turn is distilled (in finishTurn), so
+      // the UI never looks "done" while it's still processing.
       update({
         usedSeeds,
         turnAnswers,
         turnAnswerIds,
-        questionsAsked: s.questionsAsked + 1,
-        answerText: "",
+        busy: true,
+        error: null,
       });
       await finishTurn();
     },
@@ -391,6 +409,58 @@ export function useInterview() {
   const endSession = useCallback(() => {
     update({ phase: "done" });
   }, [update]);
+
+  /**
+   * Jump straight into the next interviewable layer (the "Continue" button on
+   * the done/none states). Skips any layer whose questions are exhausted, so a
+   * finished-but-0-claims layer never traps you. Resets the session in place -
+   * no navigation - so the same screen keeps going.
+   */
+  const startNext = useCallback(async () => {
+    const [claims, answers] = await Promise.all([
+      store.claims.all(),
+      store.answers.all(),
+    ]);
+    const coverage = computeCoverage(claims, answers);
+    const layer = pickInterviewLayer(
+      (l) => coverage[l].status,
+      (l) => coverage[l].answered < TARGET_QUESTIONS,
+    );
+    if (!layer) {
+      update({ phase: "none", layer: null, allClaims: claims });
+      return;
+    }
+    const usedSeeds = new Set(
+      answers
+        .filter((a) => a.layer === layer && a.questionSeedId)
+        .map((a) => a.questionSeedId as string),
+    );
+    const seed = pickNextSeed(layer, usedSeeds);
+    if (!seed) {
+      update({ phase: "none", layer, allClaims: claims });
+      return;
+    }
+    sessionId.current = newId();
+    await clearDraft();
+    update({
+      phase: "answering",
+      layer,
+      seedId: seed.id,
+      seedText: seed.text,
+      seedType: seed.type,
+      questionText: seed.text,
+      followupIndex: 0,
+      questionsAsked: 0,
+      usedSeeds,
+      turnAnswers: [],
+      turnAnswerIds: [],
+      sessionClaims: [],
+      answerText: "",
+      allClaims: claims,
+      busy: false,
+      error: null,
+    });
+  }, [store, update, clearDraft]);
 
   // ---- Field notes review actions ----
   const replaceClaim = useCallback(
@@ -445,6 +515,7 @@ export function useInterview() {
     skipQuestion,
     setAnswerText,
     endSession,
+    startNext,
     confirm,
     edit,
     discard,
