@@ -283,6 +283,170 @@ a:hover {
   color: var(--muted);
 }
 
+/* Shared section head (showcase / models) */
+.how,
+.showcase,
+.models {
+  padding: var(--pad-y) 0;
+  border-top: 1px solid var(--sand-200);
+}
+.sec-head {
+  max-width: 62ch;
+  margin-bottom: 28px;
+}
+.sec-head .label-mono {
+  display: block;
+  margin-bottom: 8px;
+}
+.sec-head h2 {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: clamp(24px, 3vw, 34px);
+  letter-spacing: -0.01em;
+  margin: 0 0 8px;
+}
+.sec-head p {
+  color: var(--muted);
+  margin: 0;
+}
+
+/* How it works */
+.how > .label-mono {
+  display: block;
+  margin-bottom: 24px;
+}
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 28px;
+}
+.step-n {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--ground);
+  font-family: var(--font-mono);
+  font-size: 14px;
+}
+.step h3 {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 20px;
+  margin: 14px 0 6px;
+}
+.step p {
+  color: var(--muted);
+  margin: 0;
+}
+
+/* Showcase: a claim card + the export preview */
+.showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+.claim-card {
+  background: var(--sand-50);
+  border: 1px solid var(--sand-300);
+  border-radius: 16px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.claim-tag {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px dashed var(--sand-300);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+.claim-text {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 1.35;
+  margin: 0;
+}
+.claim-ev {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-top: 13px;
+  border-top: 1px solid var(--sand-200);
+}
+.claim-ev p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+}
+.claim-layer {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.export-card {
+  border: 1px solid var(--sand-300);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.export-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 16px;
+  background: var(--sand-100);
+  border-bottom: 1px solid var(--sand-300);
+}
+.export-card pre {
+  margin: 0;
+  padding: 18px;
+  background: var(--sand-50);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--ink);
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+.showcase-cap {
+  margin: 20px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* Bring your own model */
+.models-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+.model {
+  background: var(--sand-50);
+  border: 1px solid var(--sand-200);
+  border-radius: 14px;
+  padding: 18px;
+}
+.model h3 {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 17px;
+  margin: 0 0 4px;
+}
+.model p {
+  color: var(--muted);
+  margin: 0;
+  font-size: 14px;
+}
+
 /* Feature rows */
 .features {
   padding: 8px 0 24px;
