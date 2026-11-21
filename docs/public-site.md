@@ -39,9 +39,14 @@ the rewrites a production static host must replicate:
 | `/studio/assets/*`, `/studio/sw.js`, … | `dist/studio/*` (real files) |
 | `/studio`, `/studio/*` (no file) | `dist/studio/index.html` (SPA history fallback) |
 
+Production also 301-redirects the app's old path: `/app` and `/app/*` →
+`/studio...` (preserving the sub-path and query), for old bookmarks and the
+previously-installed PWA. See the nginx config in `.infra/` (gitignored).
+
 Verified end-to-end: `/` serves the landing, `/privacy` + `/terms` resolve, the
-SPA boots under `/studio` (React renders the passphrase screen), `robots.txt`
-disallows `/studio`, and `/studio` carries `noindex`.
+SPA boots under `/studio` (a fresh visitor lands on the model picker; passphrase
+is opt-in, not forced), `robots.txt` disallows `/studio`, and `/studio` carries
+`noindex`.
 
 On a production host, reproduce this with rewrite rules (most static hosts have a
 simple config for it) and set the **Content-Security-Policy as an HTTP header**

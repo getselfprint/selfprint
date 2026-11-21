@@ -13,8 +13,8 @@ The project is pre-1.0; everything below has been built but not yet tagged.
 
 - **Core loop (Milestone 1).** Encrypted local store (IndexedDB + Web Crypto
   AES-GCM, PBKDF2-derived key), passphrase vault with unlock gate, first-run
-  flow, the "Choose how the interview runs" screen (Guided, copy-paste, Anthropic
-  key), the interview screen with the follow-up ladder and Field-notes review,
+  flow, the model picker, the interview screen with the follow-up ladder and
+  Field-notes review,
   the distiller with schema validation and a review queue, the Profile screen
   (edit/delete with evidence), and persona-prompt export. Network-activity panel
   and documented Content-Security-Policy.
@@ -31,6 +31,27 @@ The project is pre-1.0; everything below has been built but not yet tagged.
   `sitemap.xml`, `llms.txt`, and structured data.
 - **Project infrastructure.** MIT license, contributor and security docs, and
   Playwright end-to-end walkthrough scripts.
+
+### Changed
+
+- **One linear flow, one navigation.** Replaced the first-run stepper and the
+  grouped menu with a single top menu (Map · Interview · Profile · Settings) and
+  a linear flow: landing → model picker → Map → interview → Profile → Settings.
+  The app moved from `/app` to **`/studio`** (driven from the Vite base, so the
+  path lives in one place), with legacy `/app` URLs 301-redirecting.
+- **Model-first setup with a background download.** The interview always runs a
+  live model; the no-AI "Guided" and manual "copy-paste" modes were removed. The
+  in-browser model downloads in the background (`DownloadContext`) while you fill
+  in Facts, with honest percent / MB / ETA progress on the Map, Facts, and
+  Interview screens.
+- **Facts is Layer 01 of the interview** — a no-AI, two-page form inside the
+  interview shell (still editable later at `/studio/facts`).
+- **Map** shows the next step inside the active layer row (no separate banner);
+  **Export** moved into the Profile as its final section; **Test** and **Mirror**
+  moved under Settings → Diagnostics. Added an app footer and a right-aligned nav.
+- **Interview fixes:** the step/answer box now hold until the model finishes
+  distilling, and a layer answered in full but with no claims no longer traps the
+  flow — you can continue to the next layer.
 
 ### Notes
 

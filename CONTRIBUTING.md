@@ -63,7 +63,7 @@ Folder map:
 | Path | Responsibility |
 |------|----------------|
 | `src/app/screens` | Top-level pages (Map, Profile, Export, Settings) |
-| `src/app/<feature>` | Feature folders: `vault`, `config`, `firstrun`, `facts`, `interview`, `mirror`, `test`, `net`, `data` |
+| `src/app/<feature>` | Feature folders: `vault`, `config`, `model`, `firstrun`, `facts`, `interview`, `mirror`, `test`, `net`, `data` |
 | `src/app/components` | Shared, reusable UI (`ui.tsx`, `ConfidenceTag`, `AppHeader`) |
 | `src/engine` | `coverage`, `session`, `confidence`, `distiller`, `test`, `layers` |
 | `src/llm` | `provider` interface, adapters (`anthropic`, `openai`, `webllm`), `createProvider` |
@@ -101,7 +101,8 @@ past action), concrete, and single-choice. New layers are registered in
 **Add an LLM provider** — implement `LlmProvider` in a new `src/llm/<name>.ts`,
 export it, and add a `case` to `createProvider` in `src/llm/index.ts`. If it is a
 live model, add it to `LIVE_MODES` in `src/app/config/provider.ts` and a card in
-`ChooseHow`.
+the model picker (`src/app/model/ChooseModelScreen.tsx`, and `ChooseHow` which
+the Settings model section reuses).
 
 **Add a data entity** — add the type in `src/types/model.ts`, a store in
 `src/store/db.ts` (`ENTITY_STORES`), and a repo in `src/store/store.ts`.
@@ -113,12 +114,14 @@ behavior end-to-end with the Playwright walkthroughs:
 
 ```bash
 npm run build && npm run serve        # in one terminal
-node scripts/e2e.mjs                  # full guided walkthrough → docs/e2e/*.png
+node scripts/e2e.mjs                  # full walkthrough → docs/e2e/*.png
 node scripts/e2e-site.mjs             # public site + SPA boot
 ```
 
 They use the system Chrome (`channel: "chrome"`). Review the screenshots the run
-produces.
+produces. Note: `scripts/e2e.mjs` predates the one-linear-flow redesign and needs
+updating to match the current `/studio` flow — treat it as a starting point
+(rewriting it is a welcome contribution).
 
 ## Pull requests
 

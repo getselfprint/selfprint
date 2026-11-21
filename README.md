@@ -37,7 +37,7 @@ Your profile is six layers, surface to depth:
 
 | # | Layer | What it captures |
 |---|-------|------------------|
-| 01 | Facts | Body, history, relationships, tastes (a no-AI form) |
+| 01 | Facts | Body, history, relationships, tastes (no AI; a short form in the interview) |
 | 02 | Formative stories | The moments that shaped you |
 | 03 | Values in conflict | Which value wins when two collide |
 | 04 | Triggers and soothers | What sets you off, what calms you |
