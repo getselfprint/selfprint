@@ -14,7 +14,7 @@ const NAV: { to: string; label: string; end: boolean }[] = [
 const PILL_BASE =
   "inline-flex items-center shrink-0 whitespace-nowrap min-h-tap px-3.5 rounded-pill no-underline text-sm font-medium";
 
-/** App header - logo, the one flat menu, and the on-device assurance. */
+/** App header - logo on the left, the one flat menu on the right. */
 export function AppHeader() {
   const { lock, hasPassphrase } = useVault();
   return (
@@ -40,13 +40,13 @@ export function AppHeader() {
         <span>Selfprint</span>
       </a>
 
-      {/* On phones the nav drops to its own full-width row and scrolls
-          horizontally; on sm+ it sits inline. */}
+      {/* Nav on the right. On phones it drops to its own full-width row and
+          scrolls horizontally; on sm+ it sits inline, aligned right. */}
       <nav
         aria-label="Sections"
         className="order-last w-full overflow-x-auto sm:order-none sm:w-auto sm:overflow-visible -mx-[var(--pad-x)] px-[var(--pad-x)] sm:mx-0 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
-        <div className="flex w-max flex-nowrap items-center gap-1 sm:w-auto sm:flex-wrap">
+        <div className="flex w-max flex-nowrap items-center gap-1 sm:w-auto sm:flex-wrap sm:justify-end">
           {NAV.map((s) => (
             <NavLink
               key={s.to}
@@ -61,38 +61,32 @@ export function AppHeader() {
               {s.label}
             </NavLink>
           ))}
+          {hasPassphrase && (
+            <button
+              type="button"
+              onClick={() => void lock()}
+              title="Lock now - require the passphrase to reopen"
+              className="ml-1.5 inline-flex items-center gap-1.5 shrink-0 min-h-tap px-3 font-mono text-xs text-muted hover:text-ink"
+            >
+              <svg
+                aria-hidden="true"
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect x="4" y="11" width="16" height="10" rx="2" />
+                <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+              </svg>
+              Lock
+            </button>
+          )}
         </div>
       </nav>
-
-      <div className="flex items-center gap-4">
-        <span className="inline-flex items-center gap-2 font-mono text-xs text-muted">
-          <svg
-            aria-hidden="true"
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <rect x="4" y="11" width="16" height="10" rx="2" />
-            <path d="M8 11V7a4 4 0 0 1 8 0v4" />
-          </svg>
-          <span>On this device</span>
-        </span>
-        {hasPassphrase && (
-          <button
-            type="button"
-            onClick={() => void lock()}
-            title="Lock now - require the passphrase to reopen"
-            className="inline-flex items-center min-h-tap font-mono text-xs text-muted hover:text-ink"
-          >
-            Lock
-          </button>
-        )}
-      </div>
     </header>
   );
 }
