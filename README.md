@@ -2,7 +2,7 @@
   <img src="docs/brand/logo.png" alt="Selfprint" width="300" />
 </p>
 
-<h3 align="center">An AI that answers the way you would.</h3>
+<h3 align="center">Make any AI answer the way you would.</h3>
 
 <p align="center">
   <a href="https://selfprint.org"><strong>selfprint.org</strong></a>
