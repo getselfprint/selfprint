@@ -12,16 +12,16 @@ Prerequisites: **Node 20+** and **npm**.
 git clone https://github.com/getselfprint/selfprint
 cd selfprint
 npm install
-npm run dev          # app at http://localhost:5173/studio
+npm run dev          # app at http://localhost:5173/
 ```
 
 | Script | What it does |
 |--------|--------------|
-| `npm run dev` | Vite dev server (app only, served under `/studio`) |
+| `npm run dev` | Vite dev server (app at `/`) |
 | `npm run typecheck` | `tsc` in `--noEmit` mode |
-| `npm run build` | typecheck, build the SPA into `dist/studio`, copy `site/` into `dist/` |
-| `npm run serve` | serve the combined build (`site` at `/`, app at `/studio`) |
-| `npm run preview` | Vite preview of the app only |
+| `npm run build` | typecheck, then build the SPA into `dist/` |
+| `npm run preview` | preview the built app |
+| `npm run deploy` | build + ship to try.selfprint.org |
 
 > **Native-binary note.** The repo pins Rollup to `@rollup/wasm-node` via a
 > `package.json` `overrides` entry so it builds on machines whose security
@@ -72,7 +72,6 @@ Folder map:
 | `src/types` | the `§9` data model |
 | `prompts/` | the four public prompts |
 | `questions/` | seed questions per layer (JSON) |
-| `site/` | the pre-rendered public pages |
 
 ## Conventions
 
@@ -113,15 +112,14 @@ There isn't a unit-test suite yet (a great first contribution). For now, verify
 behavior end-to-end with the Playwright walkthroughs:
 
 ```bash
-npm run build && npm run serve        # in one terminal
+npm run build && npm run preview      # in one terminal
 node scripts/e2e.mjs                  # full walkthrough → docs/e2e/*.png
-node scripts/e2e-site.mjs             # public site + SPA boot
 ```
 
 They use the system Chrome (`channel: "chrome"`). Review the screenshots the run
-produces. Note: `scripts/e2e.mjs` predates the one-linear-flow redesign and needs
-updating to match the current `/studio` flow — treat it as a starting point
-(rewriting it is a welcome contribution).
+produces. Note: `scripts/e2e.mjs` predates the one-linear-flow redesign and the
+root-based move, so it needs updating — treat it as a starting point (rewriting
+it is a welcome contribution).
 
 ## Pull requests
 

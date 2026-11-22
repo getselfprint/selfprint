@@ -21,9 +21,9 @@ import { installRecorder } from "./app/net/recorder";
 // Record every outbound request so the Network panel can show it (spec §15.2).
 installRecorder();
 
-// The app is mounted under Vite's base (e.g. "/studio/"); the router treats that
-// as its basename so every in-app path is written base-relative ("/", "/facts",
-// "/interview", …) and the base lives in exactly one place (vite.config.ts).
+// The app is served at the root (Vite base "/"), so the basename is empty and
+// every in-app path is written root-relative ("/", "/facts", "/interview", …).
+// Derived from BASE_URL so it still works if the app is ever mounted elsewhere.
 const basename = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 createRoot(document.getElementById("root")!).render(

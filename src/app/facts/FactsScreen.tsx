@@ -4,7 +4,7 @@ import { DOTS } from "@/app/screens/shared";
 import { FactsForm } from "./FactsForm";
 
 /**
- * The standalone Facts editor at /studio/facts. Facts (Layer 01) are now filled
+ * The standalone Facts editor at /facts. Facts (Layer 01) are now filled
  * inside the interview shell on a fresh run; this page is the later editor,
  * reached from Profile/Settings "Edit facts". Two panes (context left, form
  * right). No AI; each field is a Stated claim.

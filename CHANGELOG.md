@@ -34,6 +34,12 @@ The project is pre-1.0; everything below has been built but not yet tagged.
 
 ### Changed
 
+- **Split into two repos.** The marketing site moved to its own repo
+  (`getselfprint/website`, serving `selfprint.org`); this repo is now the app
+  only - a **root-based** SPA with no `/studio` base, served at
+  `try.selfprint.org`. `npm run dev` runs it straight at `/`, so it clones and
+  self-hosts cleanly. Removed the combined-build scripts (`build-site`, `serve`,
+  `clean`) and the `/site` folder.
 - **One linear flow, one navigation.** Replaced the first-run stepper and the
   grouped menu with a single top menu (Map · Interview · Profile · Settings) and
   a linear flow: landing → model picker → Map → interview → Profile → Settings.

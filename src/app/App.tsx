@@ -11,10 +11,9 @@ import { MirrorScreen } from "./mirror/MirrorScreen";
 import { ChooseModelScreen } from "./model/ChooseModelScreen";
 
 /**
- * The client-side app is mounted under the Vite base (e.g. /studio - spec §17,
- * the public marketing/legal site is a separate pre-rendered build mounted at
- * /). Routes are written base-relative; the router's basename (main.tsx) adds
- * the prefix, so the base name lives only in vite.config.ts.
+ * The client-side app, served at the root of its own host (try.selfprint.org).
+ * The public marketing/legal site is a separate repo at selfprint.org. Routes
+ * are root-relative (the router basename is empty - see main.tsx).
  */
 export function App() {
   return (

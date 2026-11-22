@@ -25,7 +25,7 @@ function download(filename: string, data: BlobPart, mime: string) {
 /**
  * The export UI itself (format cards + preview + encrypted backup), with no page
  * chrome - rendered both as the final section of the Profile and at the
- * standalone /app/export route (reached from Settings "Back up").
+ * standalone /export route (reached from Settings "Back up").
  */
 export function ExportPanel() {
   const { store, claims, answers } = useProfile();

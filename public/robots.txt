@@ -1,0 +1,3 @@
+# try.selfprint.org is the app - no public content, not for indexing.
+User-agent: *
+Disallow: /

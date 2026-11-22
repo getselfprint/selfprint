@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Selfprint - a local-first app that interviews you, turns your answers into an editable personality model, and exports a persona file any AI can use.",
   "license": "MIT",
-  "homepage": "https://selfprint.org",
+  "homepage": "https://try.selfprint.org",
   "repository": {
     "type": "git",
     "url": "https://github.com/getselfprint/selfprint.git"
@@ -29,10 +29,8 @@
   },
   "scripts": {
     "dev": "vite",
-    "prebuild": "node scripts/clean.mjs",
-    "build": "tsc -b && vite build && node scripts/build-site.mjs",
+    "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "serve": "node scripts/serve.mjs",
     "typecheck": "tsc -b --noEmit",
     "deploy": "bash .infra/deploy.sh"
   },

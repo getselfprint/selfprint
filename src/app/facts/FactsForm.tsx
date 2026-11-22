@@ -42,7 +42,7 @@ function Field({
  *    then an optional "a bit more" - navigated with Continue / Back, matching
  *    the other layers' step rhythm. The current page is controlled by `step` /
  *    `onStep` so the shell can show progress.
- *  - single page (the standalone editor at /studio/facts): everything at once.
+ *  - single page (the standalone editor at /facts): everything at once.
  * Saving persists the data and regenerates the facts-layer claims (the form is
  * the editor; claims are the queryable representation).
  */

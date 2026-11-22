@@ -85,8 +85,8 @@ export function ConfigProvider({ children }: { children: ReactNode }) {
   const exitDemo = useCallback(async () => {
     await clearDemo(store);
     // A full reload re-reads the cleared vault so every screen starts fresh,
-    // landing on the model picker where a real run begins. BASE_URL carries the
-    // app's mount path (e.g. "/studio/"), so this survives a base rename.
+    // landing on the model picker where a real run begins. BASE_URL is the app's
+    // mount path (now "/"), so this works wherever the app is served.
     window.location.href = `${import.meta.env.BASE_URL}model`;
   }, [store]);
 

@@ -84,17 +84,19 @@ Prerequisites: **Node 20+** and **npm**.
 
 ```bash
 npm install
-npm run dev        # the app at http://localhost:5173/studio
+npm run dev        # the app at http://localhost:5173/
 ```
 
-Build and preview the whole site (public pages at `/`, the app at `/studio`):
+The app is a root-based SPA - clone it and run it anywhere. Build and preview:
 
 ```bash
-npm run build      # typecheck, build the SPA into dist/studio, copy the site into dist/
-npm run serve      # serve dist/ at http://localhost:4318
+npm run build      # typecheck, then build the SPA into dist/
+npm run preview    # serve the built app locally
 ```
 
-Other scripts: `npm run typecheck`, `npm run preview` (app only).
+Other scripts: `npm run typecheck`, `npm run deploy` (ships to try.selfprint.org).
+The public marketing site (selfprint.org) is a separate repo,
+[getselfprint/website](https://github.com/getselfprint/website).
 
 > This repo pins Rollup to its pure-WASM build (`@rollup/wasm-node`) so it builds
 > on machines whose policy blocks native `.node` addons. Remove that `overrides`
@@ -115,9 +117,8 @@ Other scripts: `npm run typecheck`, `npm run preview` (app only).
   /styles     design tokens and base styles
 /prompts      the four public prompts (interviewer, distiller, scenario, persona)
 /questions    curated seed questions per layer (JSON)
-/site         the pre-rendered public site (landing, privacy, terms)
-/scripts      build-site, serve, clean, and the Playwright e2e walkthroughs
-/docs         architecture and public-site notes
+/scripts      Playwright e2e / verification walkthroughs
+/docs         architecture notes
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the layering rules and how to add a
@@ -133,8 +134,9 @@ claims.
 
 ## Status
 
-Milestones 1–3 (core loop, full profile, trust & accuracy) and the public site
-are built. See [CHANGELOG.md](CHANGELOG.md) for details and the roadmap.
+The full six-layer loop, trust tooling (Test, Mirror), and the three export
+formats are built and live at [try.selfprint.org](https://try.selfprint.org).
+See [CHANGELOG.md](CHANGELOG.md) for details.
 
 ## Contributing
 
