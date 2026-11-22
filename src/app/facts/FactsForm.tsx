@@ -11,8 +11,11 @@ import {
   saveFacts,
 } from "./factsData";
 
-const FIELD =
-  "w-full border border-sand-300 rounded-[10px] px-3.5 py-2.5 bg-ground text-ink text-base placeholder:text-muted focus:border-accent focus:outline-none";
+// Base has no width so fields can set their own (the Born row mixes a fixed
+// year box with a flexible place input); FIELD adds w-full for the common case.
+const FIELD_BASE =
+  "border border-sand-300 rounded-[10px] px-3.5 py-2.5 bg-ground text-ink text-base placeholder:text-muted focus:border-accent focus:outline-none";
+const FIELD = `w-full ${FIELD_BASE}`;
 
 /** A label + field cell in the two-column form grid. */
 function Field({
@@ -93,7 +96,7 @@ export function FactsForm({
       <Field label="Born">
         <div className="flex items-center gap-2">
           <input
-            className={`${FIELD} w-[84px] shrink-0 text-center`}
+            className={`${FIELD_BASE} w-[84px] shrink-0 text-center`}
             inputMode="numeric"
             maxLength={4}
             placeholder="Year"
@@ -109,7 +112,7 @@ export function FactsForm({
             }
           />
           <input
-            className={`${FIELD} min-w-0`}
+            className={`${FIELD_BASE} flex-1 min-w-0`}
             placeholder="where"
             value={born.place}
             onChange={(e) => set("born", formatBorn(born.year, e.target.value))}
