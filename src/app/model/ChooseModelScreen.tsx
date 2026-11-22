@@ -114,12 +114,16 @@ export function ChooseModelScreen() {
         )}
 
         <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-          <a
-            href="/"
-            className="inline-flex items-center gap-1.5 min-h-[48px] px-5 rounded-pill border border-sand-300 bg-ground text-ink no-underline text-sm font-medium hover:bg-sand-100 hover:text-ink"
+          <button
+            type="button"
+            // Go back to wherever the user came from - the marketing site when
+            // they clicked "Try it live". Host-agnostic (no hardcoded URL), and
+            // avoids looping through the first-run guard back to /model.
+            onClick={() => window.history.back()}
+            className="inline-flex items-center gap-1.5 min-h-[48px] px-5 rounded-pill border border-sand-300 bg-ground text-ink text-sm font-medium hover:bg-sand-100 hover:text-ink"
           >
             ← Back
-          </a>
+          </button>
 
           {choice === "webllm" && (
             <button
